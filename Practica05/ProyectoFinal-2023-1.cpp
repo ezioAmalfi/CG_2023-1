@@ -1,6 +1,9 @@
 /*
 Semestre 2023-1
-Proyecto Final
+Animación:
+1.- Simple o básica:Por banderas y condicionales
+2.- Compleja: Por medio de funciones y algoritmos,Textura Animada.
+4.- Técnicas de Animación: Por Keyframes
 */
 //para cargar imagen
 #define STB_IMAGE_IMPLEMENTATION
@@ -17,7 +20,6 @@ Proyecto Final
 #include <glm.hpp>
 #include <gtc\matrix_transform.hpp>
 #include <gtc\type_ptr.hpp>
-
 //para probar el importer
 //#include<assimp/Importer.hpp>
 
@@ -39,37 +41,30 @@ Proyecto Final
 const float toRadians = 3.14159265f / 180.0f;
 
 //variables para animación
-float movCoche;
-float movOffset;
-float rotllanta;
-float rotllantaOffset;
-bool avanza;
+
+static float delay_daynight = 0.0f;
+static float delay_helper = 0.0f;
+static float light_changing = 1.0f;
+
+bool day_flag = true;
+int indexSkybox = 0.0f;
+
+
 float toffsetu = 0.0f;
 float toffsetv = 0.0f;
-float reproduciranimacion, habilitaranimacion,
-guardoFrame, reinicioFrame, ciclo, ciclo2, contador = 0;
-
-
-
 Window mainWindow;
 std::vector<Mesh*> meshList;
 std::vector<Shader> shaderList;
 
 Camera camera;
 
-Texture brickTexture;
-Texture dirtTexture;
-Texture plainTexture;
+//Texturas
 Texture pisoTexture;
-Texture AgaveTexture;
-Texture FlechaTexture;
 
-Model Kitt_M;
-Model Llanta_M;
-Model Camino_M;
-Model Blackhawk_M;
-Model Dado_M;
+//Modelos
+Model Scenario_M;
 
+//Skybox
 Skybox skybox;
 
 //materiales
@@ -93,10 +88,6 @@ static const char* vShader = "shaders/shader_light.vert";
 
 // Fragment Shader
 static const char* fShader = "shaders/shader_light.frag";
-
-//PARA INPUT CON KEYFRAMES 
-void inputKeyframes(bool* keys);
-
 
 //cálculo del promedio de las normales para sombreado de Phong
 void calcAverageNormals(unsigned int* indices, unsigned int indiceCount, GLfloat* vertices, unsigned int verticeCount,
@@ -127,7 +118,6 @@ void calcAverageNormals(unsigned int* indices, unsigned int indiceCount, GLfloat
 	}
 }
 
-
 void CreateObjects()
 {
 	unsigned int indices[] = {
@@ -135,6 +125,34 @@ void CreateObjects()
 		1, 3, 2,
 		2, 3, 0,
 		0, 1, 2
+	};
+
+	unsigned int pantallaIndices[] = {
+		0, 1, 2, 2, 3, 0, 1, 5, 6, 6, 2, 1, 7, 6, 5,
+		5, 4, 7, 4, 0, 3, 3, 7, 4, 4, 5, 1, 1, 0, 4
+	};
+
+	unsigned int imagenIndices[] = { //Plano top
+		3, 2, 6, 6, 7, 3
+	};
+
+	GLfloat animacion1Vertices[] = {
+		-1.0f, -1.0f, -0.6f,	0.0f, 0.0f,		0.0f, 0.0f, 0.0f,
+		0.0f, -1.0f, 1.0f,		0.005f, 0.0f,	0.0f, 0.0f, 0.0f,
+		1.0f, -1.0f, -0.6f,		0.005f, 1.0f,	0.0f, 0.0f, 0.0f,
+		0.0f, 1.0f, 0.0f,		0.0f, 1.0f,		0.0f, 0.0f, 0.0f
+	};
+
+	GLfloat pantallaVertices[] = {
+		-0.5f, -0.5f,  0.5f,	0.0f, 0.0f,		0.0f, 0.0f, 0.0f,
+		0.5f, -0.5f,  0.5f,		1.0f, 0.0f,		0.0f, 0.0f, 0.0f,
+		0.5f,  0.5f,  0.5f,		1.0f, 1.0f,		0.0f, 0.0f, 0.0f,
+		-0.5f,  0.5f,  0.5f,	0.0f, 1.0f,		0.0f, 0.0f, 0.0f,
+
+		-0.5f, -0.5f, -0.5f,	0.0f, 0.0f,		0.0f, 0.0f, 0.0f,
+		0.5f, -0.5f, -0.5f,		1.0f, 0.0f,		0.0f, 0.0f, 0.0f,
+		0.5f,  0.5f, -0.5f,		1.0f, 1.0f,		0.0f, 0.0f, 0.0f,
+		-0.5f,  0.5f, -0.5f, 	0.0f, 1.0f,		0.0f, 0.0f, 0.0f,
 	};
 
 	GLfloat vertices[] = {
@@ -151,32 +169,11 @@ void CreateObjects()
 	};
 
 	GLfloat floorVertices[] = {
-		-10.0f, 0.0f, -10.0f,	0.0f, 0.0f,		0.0f, -1.0f, 0.0f,
-		10.0f, 0.0f, -10.0f,	10.0f, 0.0f,	0.0f, -1.0f, 0.0f,
-		-10.0f, 0.0f, 10.0f,	0.0f, 10.0f,	0.0f, -1.0f, 0.0f,
-		10.0f, 0.0f, 10.0f,		10.0f, 10.0f,	0.0f, -1.0f, 0.0f
+		-15.0f, 0.0f, -15.0f,	0.0f, 0.0f,		0.0f, -1.0f, 0.0f,
+		15.0f, 0.0f, -15.0f,	15.0f, 0.0f,	0.0f, -1.0f, 0.0f,
+		-15.0f, 0.0f, 15.0f,	0.0f, 15.0f,	0.0f, -1.0f, 0.0f,
+		15.0f, 0.0f, 15.0f,		15.0f, 15.0f,	0.0f, -1.0f, 0.0f
 	};
-	unsigned int vegetacionIndices[] = {
-	   0, 1, 2,
-	   0, 2, 3,
-	   4,5,6,
-	   4,6,7
-	};
-
-	GLfloat vegetacionVertices[] = {
-		-0.5f, -0.5f, 0.0f,		0.0f, 0.0f,		0.0f, 0.0f, 0.0f,
-		0.5f, -0.5f, 0.0f,		1.0f, 0.0f,		0.0f, 0.0f, 0.0f,
-		0.5f, 0.5f, 0.0f,		1.0f, 1.0f,		0.0f, 0.0f, 0.0f,
-		-0.5f, 0.5f, 0.0f,		0.0f, 1.0f,		0.0f, 0.0f, 0.0f,
-
-		0.0f, -0.5f, -0.5f,		0.0f, 0.0f,		0.0f, 0.0f, 0.0f,
-		0.0f, -0.5f, 0.5f,		1.0f, 0.0f,		0.0f, 0.0f, 0.0f,
-		0.0f, 0.5f, 0.5f,		1.0f, 1.0f,		0.0f, 0.0f, 0.0f,
-		0.0f, 0.5f, -0.5f,		0.0f, 1.0f,		0.0f, 0.0f, 0.0f,
-
-
-	};
-	
 
 	unsigned int flechaIndices[] = {
 	   0, 1, 2,
@@ -191,140 +188,26 @@ void CreateObjects()
 
 	};
 
-	Mesh *obj1 = new Mesh();
+	Mesh* obj1 = new Mesh();
 	obj1->CreateMesh(vertices, indices, 32, 12);
 	meshList.push_back(obj1);
 
-	Mesh *obj2 = new Mesh();
+	Mesh* obj2 = new Mesh();
 	obj2->CreateMesh(vertices, indices, 32, 12);
 	meshList.push_back(obj2);
 
-	Mesh *obj3 = new Mesh();
+	//textura piso
+	Mesh* obj3 = new Mesh();
 	obj3->CreateMesh(floorVertices, floorIndices, 32, 6);
 	meshList.push_back(obj3);
-
-
-	Mesh* obj4 = new Mesh();
-	obj4->CreateMesh(vegetacionVertices, vegetacionIndices, 64, 12);
-	meshList.push_back(obj4);
-
-	Mesh* obj5 = new Mesh();
-	obj5->CreateMesh(flechaVertices, flechaIndices, 32, 6);
-	meshList.push_back(obj5);
-
 }
-
 
 void CreateShaders()
 {
-	Shader *shader1 = new Shader();
+	Shader* shader1 = new Shader();
 	shader1->CreateFromFiles(vShader, fShader);
 	shaderList.push_back(*shader1);
 }
-
-///////////////////////////////KEYFRAMES/////////////////////
-
-
-bool animacion = false;
-
-
-//NEW// Keyframes
-float posXavion = 2.0, posYavion = 5.0, posZavion = -3.0;
-float	movAvion_x = 0.0f, movAvion_y = 0.0f;
-float giroAvion = 0;
-
-#define MAX_FRAMES 30
-int i_max_steps = 90;
-int i_curr_steps = 5;
-typedef struct _frame
-{
-	//Variables para GUARDAR Key Frames
-	float movAvion_x;		//Variable para PosicionX
-	float movAvion_y;		//Variable para PosicionY
-	float movAvion_xInc;		//Variable para IncrementoX
-	float movAvion_yInc;		//Variable para IncrementoY
-	float giroAvion;
-	float giroAvionInc;
-}FRAME;
-
-FRAME KeyFrame[MAX_FRAMES];
-int FrameIndex = 5;			//introducir datos
-bool play = false;
-int playIndex = 0;
-
-void saveFrame(void)
-{
-
-	printf("frameindex %d\n", FrameIndex);
-
-
-	KeyFrame[FrameIndex].movAvion_x = movAvion_x;
-	KeyFrame[FrameIndex].movAvion_y = movAvion_y;
-	KeyFrame[FrameIndex].giroAvion = giroAvion;
-
-	FrameIndex++;
-}
-
-void resetElements(void)
-{
-
-	movAvion_x = KeyFrame[0].movAvion_x;
-	movAvion_y = KeyFrame[0].movAvion_y;
-	giroAvion = KeyFrame[0].giroAvion;
-}
-
-void interpolation(void)
-{
-	KeyFrame[playIndex].movAvion_xInc = (KeyFrame[playIndex + 1].movAvion_x - KeyFrame[playIndex].movAvion_x) / i_max_steps;
-	KeyFrame[playIndex].movAvion_yInc = (KeyFrame[playIndex + 1].movAvion_y - KeyFrame[playIndex].movAvion_y) / i_max_steps;
-	KeyFrame[playIndex].giroAvionInc = (KeyFrame[playIndex + 1].giroAvion - KeyFrame[playIndex].giroAvion) / i_max_steps;
-
-}
-
-
-void animate(void)
-{
-	//Movimiento del objeto
-	if (play)
-	{
-		if (i_curr_steps >= i_max_steps) //end of animation between frames?
-		{
-			playIndex++;
-			printf("playindex : %d\n", playIndex);
-			if (playIndex > FrameIndex - 2)	//end of total animation?
-			{
-				printf("Frame index= %d\n", FrameIndex);
-				printf("termina anim\n");
-				playIndex = 0;
-				play = false;
-			}
-			else //Next frame interpolations
-			{
-				//printf("entro aquí\n");
-				i_curr_steps = 0; //Reset counter
-				//Interpolation
-				interpolation();
-			}
-		}
-		else
-		{
-			//printf("se quedó aqui\n");
-			//printf("max steps: %f", i_max_steps);
-			//Draw animation
-			movAvion_x += KeyFrame[playIndex].movAvion_xInc;
-			movAvion_y += KeyFrame[playIndex].movAvion_yInc;
-			giroAvion += KeyFrame[playIndex].giroAvionInc;
-			i_curr_steps++;
-		}
-
-	}
-}
-
-/* FIN KEYFRAMES*/
-
-
-
-
 
 int main()
 {
@@ -333,128 +216,123 @@ int main()
 
 	CreateObjects();
 	CreateShaders();
+	camera = Camera(glm::vec3(0.0f, 15.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f), -60.0f, 0.0f, 2.5f, 0.5f);
 
-	camera = Camera(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f), -60.0f, 0.0f, 0.5f, 0.5f);
-
-	brickTexture = Texture("Textures/brick.png");
-	brickTexture.LoadTextureA();
-	dirtTexture = Texture("Textures/dirt.png");
-	dirtTexture.LoadTextureA();
-	plainTexture = Texture("Textures/plain.png");
-	plainTexture.LoadTextureA();
+	//Carga de texturas
 	pisoTexture = Texture("Textures/piso.tga");
 	pisoTexture.LoadTextureA();
-	AgaveTexture = Texture("Textures/Agave.tga");
-	AgaveTexture.LoadTextureA();
-	FlechaTexture = Texture("Textures/flechas.tga");
-	FlechaTexture.LoadTextureA();
-	Kitt_M = Model();
-	Kitt_M.LoadModel("Models/kitt_optimizado.obj");
-	Llanta_M = Model();
-	Llanta_M.LoadModel("Models/k_rueda.3ds");
-	Blackhawk_M = Model();
-	Blackhawk_M.LoadModel("Models/uh60.obj");
-	Camino_M = Model();
-	Camino_M.LoadModel("Models/railroad track.obj");
-
 
 	std::vector<std::string> skyboxFaces;
-	skyboxFaces.push_back("Textures/Skybox/cupertin-lake_rt.tga");
-	skyboxFaces.push_back("Textures/Skybox/cupertin-lake_lf.tga");
-	skyboxFaces.push_back("Textures/Skybox/cupertin-lake_dn.tga");
-	skyboxFaces.push_back("Textures/Skybox/cupertin-lake_up.tga");
-	skyboxFaces.push_back("Textures/Skybox/cupertin-lake_bk.tga");
-	skyboxFaces.push_back("Textures/Skybox/cupertin-lake_ft.tga");
+	std::vector<std::string> nowSkybox;
+
+	//light_1.0
+	skyboxFaces.push_back("Textures/Skybox/town_light_1_0/town_px.png");
+	skyboxFaces.push_back("Textures/Skybox/town_light_1_0/town_nx.png");
+	skyboxFaces.push_back("Textures/Skybox/town_light_1_0/town_ny.png");
+	skyboxFaces.push_back("Textures/Skybox/town_light_1_0/town_py.png");
+	skyboxFaces.push_back("Textures/Skybox/town_light_1_0/town_pz.png");
+	skyboxFaces.push_back("Textures/Skybox/town_light_1_0/town_nz.png");
+	//light_0.9
+	skyboxFaces.push_back("Textures/Skybox/town_light_0_9/town_px.png");
+	skyboxFaces.push_back("Textures/Skybox/town_light_0_9/town_nx.png");
+	skyboxFaces.push_back("Textures/Skybox/town_light_0_9/town_ny.png");
+	skyboxFaces.push_back("Textures/Skybox/town_light_0_9/town_py.png");
+	skyboxFaces.push_back("Textures/Skybox/town_light_0_9/town_pz.png");
+	skyboxFaces.push_back("Textures/Skybox/town_light_0_9/town_nz.png");
+	//light_0.8
+	skyboxFaces.push_back("Textures/Skybox/town_light_0_8/town_px.png");
+	skyboxFaces.push_back("Textures/Skybox/town_light_0_8/town_nx.png");
+	skyboxFaces.push_back("Textures/Skybox/town_light_0_8/town_ny.png");
+	skyboxFaces.push_back("Textures/Skybox/town_light_0_8/town_py.png");
+	skyboxFaces.push_back("Textures/Skybox/town_light_0_8/town_pz.png");
+	skyboxFaces.push_back("Textures/Skybox/town_light_0_8/town_nz.png");
+	//light_0.7
+	skyboxFaces.push_back("Textures/Skybox/town_light_0_7/town_px.png");
+	skyboxFaces.push_back("Textures/Skybox/town_light_0_7/town_nx.png");
+	skyboxFaces.push_back("Textures/Skybox/town_light_0_7/town_ny.png");
+	skyboxFaces.push_back("Textures/Skybox/town_light_0_7/town_py.png");
+	skyboxFaces.push_back("Textures/Skybox/town_light_0_7/town_pz.png");
+	skyboxFaces.push_back("Textures/Skybox/town_light_0_7/town_nz.png");
+	//light_0.6
+	skyboxFaces.push_back("Textures/Skybox/town_light_0_6/town_px.png");
+	skyboxFaces.push_back("Textures/Skybox/town_light_0_6/town_nx.png");
+	skyboxFaces.push_back("Textures/Skybox/town_light_0_6/town_ny.png");
+	skyboxFaces.push_back("Textures/Skybox/town_light_0_6/town_py.png");
+	skyboxFaces.push_back("Textures/Skybox/town_light_0_6/town_pz.png");
+	skyboxFaces.push_back("Textures/Skybox/town_light_0_6/town_nz.png");
+	//light_0.5
+	skyboxFaces.push_back("Textures/Skybox/town_light_0_5/town_px.png");
+	skyboxFaces.push_back("Textures/Skybox/town_light_0_5/town_nx.png");
+	skyboxFaces.push_back("Textures/Skybox/town_light_0_5/town_ny.png");
+	skyboxFaces.push_back("Textures/Skybox/town_light_0_5/town_py.png");
+	skyboxFaces.push_back("Textures/Skybox/town_light_0_5/town_pz.png");
+	skyboxFaces.push_back("Textures/Skybox/town_light_0_5/town_nz.png");
+	//light_0.4
+	skyboxFaces.push_back("Textures/Skybox/town_light_0_4/town_px.png");
+	skyboxFaces.push_back("Textures/Skybox/town_light_0_4/town_nx.png");
+	skyboxFaces.push_back("Textures/Skybox/town_light_0_4/town_ny.png");
+	skyboxFaces.push_back("Textures/Skybox/town_light_0_4/town_py.png");
+	skyboxFaces.push_back("Textures/Skybox/town_light_0_4/town_pz.png");
+	skyboxFaces.push_back("Textures/Skybox/town_light_0_4/town_nz.png");
+	//light_0.3
+	skyboxFaces.push_back("Textures/Skybox/town_light_0_3/town_px.png");
+	skyboxFaces.push_back("Textures/Skybox/town_light_0_3/town_nx.png");
+	skyboxFaces.push_back("Textures/Skybox/town_light_0_3/town_ny.png");
+	skyboxFaces.push_back("Textures/Skybox/town_light_0_3/town_py.png");
+	skyboxFaces.push_back("Textures/Skybox/town_light_0_3/town_pz.png");
+	skyboxFaces.push_back("Textures/Skybox/town_light_0_3/town_nz.png");
+	//light_0.2
+	skyboxFaces.push_back("Textures/Skybox/town_light_0_2/town_px.png");
+	skyboxFaces.push_back("Textures/Skybox/town_light_0_2/town_nx.png");
+	skyboxFaces.push_back("Textures/Skybox/town_light_0_2/town_ny.png");
+	skyboxFaces.push_back("Textures/Skybox/town_light_0_2/town_py.png");
+	skyboxFaces.push_back("Textures/Skybox/town_light_0_2/town_pz.png");
+	skyboxFaces.push_back("Textures/Skybox/town_light_0_2/town_nz.png");
+	//light_0.1
+	skyboxFaces.push_back("Textures/Skybox/town_light_0_1/town_px.png");
+	skyboxFaces.push_back("Textures/Skybox/town_light_0_1/town_nx.png");
+	skyboxFaces.push_back("Textures/Skybox/town_light_0_1/town_ny.png");
+	skyboxFaces.push_back("Textures/Skybox/town_light_0_1/town_py.png");
+	skyboxFaces.push_back("Textures/Skybox/town_light_0_1/town_pz.png");
+	skyboxFaces.push_back("Textures/Skybox/town_light_0_1/town_nz.png");
 
 	skybox = Skybox(skyboxFaces);
 
 	Material_brillante = Material(4.0f, 256);
 	Material_opaco = Material(0.3f, 4);
 
-
-	//luz direccional, sólo 1 y siempre debe de existir
-	mainLight = DirectionalLight(1.0f, 1.0f, 1.0f,
-		0.3f, 0.3f,
-		0.0f, 0.0f, -1.0f);
 	//contador de luces puntuales
 	unsigned int pointLightCount = 0;
-	//Declaración de primer luz puntual
-	pointLights[0] = PointLight(1.0f, 0.0f, 0.0f,
-		0.0f, 1.0f,
-		0.0f, 2.5f, 1.5f,
-		0.3f, 0.2f, 0.1f);
+
+	// Lampara calle 1
+	pointLights[0] = PointLight(1.0f, 1.0f, 1.0f,
+		10000.0f, 10000.0f,
+		-167.0f, 130.0f, -189.0f,
+		2.0f, 2.0f, 1.0f);
+	pointLightCount++;
+
+	// Lampara calle 2
+	pointLights[1] = PointLight(1.0f, 1.0f, 1.0f,
+		10000.0f, 10000.0f,
+		-167.0f, 100.0f, 120.0f,
+		2.0f, 2.0f, 1.0f);
+	pointLightCount++;
+
+	// Lampara calle 3
+	pointLights[2] = PointLight(1.0f, 1.0f, 1.0f,
+		15000.0f, 10000.0f,
+		237.0f, 100.0f, -30.0f,
+		2.0f, 2.0f, 1.0f);
 	pointLightCount++;
 
 	unsigned int spotLightCount = 0;
-	//linterna
-	spotLights[0] = SpotLight(1.0f, 1.0f, 1.0f,
-		0.0f, 2.0f,
-		0.0f, 0.0f, 0.0f,
-		0.0f, -1.0f, 0.0f,
-		1.0f, 0.0f, 0.0f,
-		5.0f);
-	spotLightCount++;
-
-	//luz fija
-	spotLights[1] = SpotLight(0.0f, 0.0f, 1.0f,
-		1.0f, 2.0f,
-		5.0f, 10.0f, 0.0f,
-		0.0f, -5.0f, 0.0f,
-		1.0f, 0.0f, 0.0f,
-		15.0f);
-	spotLightCount++;
-
-	//luz de helicóptero
-
-	//luz de faro
-
-
 
 	GLuint uniformProjection = 0, uniformModel = 0, uniformView = 0, uniformEyePosition = 0,
-		uniformSpecularIntensity = 0, uniformShininess = 0, uniformTextureOffset=0;
+		uniformSpecularIntensity = 0, uniformShininess = 0, uniformTextureOffset = 0;
 	GLuint uniformColor = 0;
 	glm::mat4 projection = glm::perspective(45.0f, (GLfloat)mainWindow.getBufferWidth() / mainWindow.getBufferHeight(), 0.1f, 1000.0f);
-	
-	movCoche = 0.0f;
-	movOffset = 0.001f;
-	rotllanta = 0.0f;
-	rotllantaOffset = 5.0f;
-	avanza = true;
-
-	glm::vec3 posblackhawk = glm::vec3(2.0f, 0.0f, 0.0f);
-	//KEYFRAMES DECLARADOS INICIALES
-
-	KeyFrame[0].movAvion_x = 0.0f;
-	KeyFrame[0].movAvion_y = 0.0f;
-	KeyFrame[0].giroAvion = 0;
 
 
-	KeyFrame[1].movAvion_x = 1.0f;
-	KeyFrame[1].movAvion_y = 2.0f;
-	KeyFrame[1].giroAvion = 0;
-
-
-	KeyFrame[2].movAvion_x = 2.0f;
-	KeyFrame[2].movAvion_y = 0.0f;
-	KeyFrame[2].giroAvion = 0;
-
-
-	KeyFrame[3].movAvion_x = 3.0f;
-	KeyFrame[3].movAvion_y = -2.0f;
-	KeyFrame[3].giroAvion = 0;
-
-	KeyFrame[4].movAvion_x = 4.0f;
-	KeyFrame[4].movAvion_y = 0.0f;
-	KeyFrame[4].giroAvion = 180.0f;
-
-
-	//Agregar Kefyrame[5] para que el avión regrese al inicio
-
-
-
-
-
-	
 	////Loop mientras no se cierra la ventana
 	while (!mainWindow.getShouldClose())
 	{
@@ -463,47 +341,10 @@ int main()
 		deltaTime += (now - lastTime) / limitFPS;
 		lastTime = now;
 
-		if(avanza)
-		{
-			if (movCoche < 301.0f)
-			{
-				movCoche -= movOffset * deltaTime;
-				//printf("avanza%f \n ",movCoche);
-
-			}
-			if (movCoche < -300.0f)
-			{
-				avanza = false;
-			}
-		}
-		else
-		{
-			if (movCoche < 300.0f)
-			{
-				movCoche += movOffset * deltaTime;
-
-			}
-			else
-			{
-				//printf("entro");
-				avanza = true;
-			}
-
-		}
-
-
-		rotllanta += rotllantaOffset * deltaTime;
-
-
 		//Recibir eventos del usuario
 		glfwPollEvents();
 		camera.keyControl(mainWindow.getsKeys(), deltaTime);
 		camera.mouseControl(mainWindow.getXChange(), mainWindow.getYChange());
-
-		//para keyframes
-		inputKeyframes(mainWindow.getsKeys());
-		animate();
-
 
 		// Clear the window
 		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
@@ -531,8 +372,6 @@ int main()
 		spotLights[0].SetFlash(lowerLight, camera.getCameraDirection());
 
 		//información al shader de fuentes de iluminación
-		shaderList[0].SetDirectionalLight(&mainLight);
-		shaderList[0].SetPointLights(pointLights, pointLightCount);
 		shaderList[0].SetSpotLights(spotLights, spotLightCount);
 
 		glm::mat4 model(1.0);
@@ -540,6 +379,7 @@ int main()
 		glm::vec3 color = glm::vec3(1.0f, 1.0f, 1.0f);
 		glm::vec2 toffset = glm::vec2(0.0f, 0.0f);
 
+		//modelo de piso
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(0.0f, -2.0f, 0.0f));
 		model = glm::scale(model, glm::vec3(30.0f, 1.0f, 30.0f));
@@ -548,179 +388,87 @@ int main()
 		glUniform2fv(uniformTextureOffset, 1, glm::value_ptr(toffset));
 		pisoTexture.UseTexture();
 		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		meshList[2]->RenderMesh();
+		shaderList[0].SetDirectionalLight(&mainLight);		
 
-		//meshList[2]->RenderMesh();
+		//Acá todo lo de GL_BLEND (Texturas)
+		//glEnable(GL_BLEND);
+		//glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-
-		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(movCoche, 0.5f, -1.5f));
-		modelaux = model;
-		model = glm::scale(model, glm::vec3(0.5f, 0.5f, 0.5f));
-		model = glm::rotate(model, -90 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
-		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		Kitt_M.RenderModel();
-		model = modelaux;
-		model = glm::translate(model, glm::vec3(-1.0, -0.1f, 0.2f));
-		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.07f));
-		model = glm::rotate(model, 90 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
-		model = glm::rotate(model, rotllanta * toRadians, glm::vec3(1.0f, 0.0f, 0.0f));
-		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
-		//Llanta_M.RenderModel();
-
-
-		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(0.0f+3*movCoche, 3.0f + 0.33*sin(glm::radians(rotllanta)), -1.0 ));
-		model = glm::scale(model, glm::vec3(0.3f, 0.3f, 0.3f));
-		model = glm::rotate(model, -90 * toRadians, glm::vec3(1.0f, 0.0f, 0.0f));
-		model = glm::rotate(model, 90 * toRadians, glm::vec3(0.0f, 0.0f, 1.0f));
-
-		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
-		color = glm::vec3(0.0f, 1.0f, 0.0f);
-		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
-		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		//Blackhawk_M.RenderModel();
-
-		model = glm::mat4(1.0);
-		posblackhawk = glm::vec3(posXavion + movAvion_x, posYavion + movAvion_y, posZavion);
-		model = glm::translate(model, posblackhawk);
-		model = glm::scale(model, glm::vec3(0.3f, 0.3f, 0.3f));
-		model = glm::rotate(model, giroAvion * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
-		model = glm::rotate(model, -90 * toRadians, glm::vec3(1.0f, 0.0f, 0.0f));
-		model = glm::rotate(model, -90 * toRadians, glm::vec3(0.0f, 0.0f, 1.0f));
-		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
-		//Blackhawk_M.RenderModel();
-
-
-		//color = glm::vec3(1.0f, 1.0f, 1.0f);
-		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(0.0f, -1.53f, 0.0f));
-		model = glm::scale(model, glm::vec3(25.0f, 1.0f, 2.0f));
-		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		//Camino_M.RenderModel();
-
-		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(0.0f, 0.5f, -2.0f));
-		model = glm::scale(model, glm::vec3(2.0f, 2.0f, 2.0f));
-		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		//blending: transparencia o traslucidez
-		glEnable(GL_BLEND);
-		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-		AgaveTexture.UseTexture();
-		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		////Textura de anuncio en pantalla
+		//toffsetu += 0.0001;
+		//if (toffsetu > 1.0) toffsetu = 0.0;
+		//toffset = glm::vec2(toffsetu, 0.0f);
+		//model = glm::mat4(1.0);
+		//model = glm::scale(model, glm::vec3(200.0f, 1.0f, 50.0f));
+		////model = glm::translate(model, glm::vec3(200.0f, 100.0f, 50.0f));
+		////model = glm::rotate(model, 90 * toRadians, glm::vec3(0.0f, 0.0f, 0.0f));
+		//glUniform2fv(uniformTextureOffset, 1, glm::value_ptr(toffset));
+		//glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		////AnuncioTexture.UseTexture();
 		//meshList[3]->RenderMesh();
-		
-
-		//textura con movimiento
-		//Importantes porque la variable uniform no podemos modificarla directamente
-		toffsetu += 0.001;
-		toffsetv += 0.001;
-		//para que no se desborde la variable
-		if (toffsetu > 1.0)
-			toffsetu = 0.0;
-		if (toffsetv > 1.0)
-		toffsetv = 0;
-		toffset = glm::vec2(toffsetu, toffsetv);
-
-		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(0.0f, 0.2f, -6.0f));
-		model = glm::rotate(model, -90 * toRadians, glm::vec3(1.0f, 0.0f, 0.0f));
-		model = glm::scale(model, glm::vec3(2.0f, 2.0f, 2.0f));
-		glUniform2fv(uniformTextureOffset, 1, glm::value_ptr(toffset));
-		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		
-		//FlechaTexture.UseTexture();
-		//Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
-		//meshList[4]->RenderMesh();
-		glDisable(GL_BLEND);
-		
-		
 
 
+		//glDisable(GL_BLEND);
+
+		//HELPER PARA COLOCAR OBJETOS
+		if (delay_helper >= 50.0f) {
+
+			printf("\nEl objeto está en X: %f , Y: %f , Z: %f", mainWindow.getposx_bh(), mainWindow.getelevacion_bh(), mainWindow.getposz_bh());
+			delay_helper = 0.0f;
+		}
+		delay_helper += deltaTime;
+
+		// SECCION PARA ANIMACIÓN
+
+
+
+		// Ciclado Dia-Noche de la luz direccional
+		if (delay_daynight >= 360.0f && day_flag == true) {
+
+			mainLight = DirectionalLight(1.0f, 1.0f, 1.0f,
+				light_changing, light_changing,
+				0.0f, 0.0f, -1.0f);
+			shaderList[0].SetDirectionalLight(&mainLight);
+			light_changing -= 0.1;
+			delay_daynight = 0.0f;
+
+			nowSkybox = { skyboxFaces.begin() + indexSkybox, skyboxFaces.begin() + indexSkybox + 6 };
+			skybox = Skybox(nowSkybox);
+			indexSkybox += 6;
+
+			if (light_changing <= 0.3)
+				shaderList[0].SetPointLights(pointLights, pointLightCount);
+
+			if (light_changing <= 0.1)
+				day_flag = false;
+
+		}
+
+		if (delay_daynight >= 360.0f && day_flag == false) {
+
+			mainLight = DirectionalLight(1.0f, 1.0f, 1.0f,
+				light_changing, light_changing,
+				0.0f, 0.0f, -1.0f);
+			shaderList[0].SetDirectionalLight(&mainLight);
+			light_changing += 0.1;
+			delay_daynight = 0.0f;
+
+			nowSkybox = { skyboxFaces.begin() + indexSkybox, skyboxFaces.begin() + indexSkybox + 6 };
+			skybox = Skybox(nowSkybox);
+			indexSkybox -= 6;
+
+			if (light_changing >= 0.4)
+				shaderList[0].SetPointLights(pointLights, 0);
+
+			if (light_changing >= 1.0f)
+				day_flag = true;
+		}
+
+		delay_daynight += deltaTime;
 
 		glUseProgram(0);
-
 		mainWindow.swapBuffers();
 	}
-
 	return 0;
 }
-
-void inputKeyframes(bool* keys)
-{
-	if (keys[GLFW_KEY_SPACE])
-	{
-		if (reproduciranimacion < 1)
-		{
-			if (play == false && (FrameIndex > 1))
-			{
-				resetElements();
-				//First Interpolation				
-				interpolation();
-				play = true;
-				playIndex = 0;
-				i_curr_steps = 0;
-				reproduciranimacion++;
-				printf("\n presiona 0 para habilitar reproducir de nuevo la animación'\n");
-				habilitaranimacion = 0;
-
-			}
-			else
-			{
-				play = false;
-			}
-		}
-	}
-	if (keys[GLFW_KEY_0])
-	{
-		if (habilitaranimacion < 1)
-		{
-			reproduciranimacion = 0;
-		}
-	}
-
-	if (keys[GLFW_KEY_L])
-	{
-		if (guardoFrame < 1)
-		{
-			saveFrame();
-			printf("movAvion_x es: %f\n", movAvion_x);
-			//printf("movAvion_y es: %f\n", movAvion_y);
-			printf(" \npresiona P para habilitar guardar otro frame'\n");
-			guardoFrame++;
-			reinicioFrame = 0;
-		}
-	}
-	if (keys[GLFW_KEY_P])
-	{
-		if (reinicioFrame < 1)
-		{
-			guardoFrame = 0;
-		}
-	}
-
-
-	if (keys[GLFW_KEY_1])
-	{
-		if (ciclo < 1)
-		{
-			//printf("movAvion_x es: %f\n", movAvion_x);
-			movAvion_x += 1.0f;
-			printf("\n movAvion_x es: %f\n", movAvion_x);
-			ciclo++;
-			ciclo2 = 0;
-			printf("\n reinicia con 2\n");
-		}
-
-	}
-	if (keys[GLFW_KEY_2])
-	{
-		if (ciclo2 < 1)
-		{
-			ciclo = 0;
-		}
-	}
-
-}
-
