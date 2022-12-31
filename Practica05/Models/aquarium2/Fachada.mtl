@@ -1,7 +1,7 @@
 # 3ds Max Wavefront OBJ Exporter v0.99 - (c)2007 guruware
-# File Created: 08.12.2022 16:46:49
+# File Created: 27.11.2022 18:38:57
 
-newmtl Material__104
+newmtl Material__126
 	Ns 10.0000
 	Ni 1.5000
 	d 1.0000
@@ -12,10 +12,10 @@ newmtl Material__104
 	Kd 0.5880 0.5880 0.5880
 	Ks 0.0000 0.0000 0.0000
 	Ke 0.0000 0.0000 0.0000
-	map_Ka Map__15_Map Output Selector.tga
-	map_Kd Map__15_Map Output Selector.tga
+	map_Ka Map__14_Map Output Selector.jpg
+	map_Kd Map__14_Map Output Selector.jpg
 
-newmtl Material__92
+newmtl Material__103
 	Ns 10.0000
 	Ni 1.5000
 	d 1.0000
@@ -26,10 +26,10 @@ newmtl Material__92
 	Kd 0.5880 0.5880 0.5880
 	Ks 0.0000 0.0000 0.0000
 	Ke 0.0000 0.0000 0.0000
-	map_Ka Map__12_Map Output Selector.tga
-	map_Kd Map__12_Map Output Selector.tga
+	map_Ka Map__11_Map Output Selector.jpg
+	map_Kd Map__11_Map Output Selector.jpg
 
-newmtl Material__129
+newmtl Material__171
 	Ns 10.0000
 	Ni 1.5000
 	d 1.0000
@@ -40,5 +40,5 @@ newmtl Material__129
 	Kd 0.5880 0.5880 0.5880
 	Ks 0.0000 0.0000 0.0000
 	Ke 0.0000 0.0000 0.0000
-	map_Ka marco.png
-	map_Kd marco.png
+	map_Ka Map__24_Map Output Selector.jpg
+	map_Kd Map__24_Map Output Selector.jpg

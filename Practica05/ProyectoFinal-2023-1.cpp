@@ -63,6 +63,7 @@ Texture pisoTexture;
 
 //Modelos
 Model Scenario_M;
+
 //Partes Orca//
 Model AletaDerOrca;
 Model AletaIzqOrca;
@@ -122,6 +123,8 @@ Model ColaDelfin;
 Model CuerpoDelDelfin;
 Model CuerpoTraDelfin;
 
+Model acuario;
+Model acuario2;
 //Skybox
 Skybox skybox;
 
@@ -355,6 +358,14 @@ int main()
 	skyboxFaces.push_back("Textures/Skybox/town_light_0_1/town_nz.png");
 
 	//Carga de modelos
+	// 
+	// ACUARIO 1 //
+	acuario = Model();
+	acuario.LoadModel("Models/aquarium/aquarium.obj");
+
+	// ACUARIO 2 //
+	acuario2 = Model();
+	acuario2.LoadModel("Models/aquarium2/Fachada.obj");
 	//ORCA//
 	AletaDerOrca = Model();
 	AletaDerOrca.LoadModel("Models/orca/AletaDerOrca.obj");
@@ -556,6 +567,27 @@ int main()
 		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		meshList[2]->RenderMesh();
 		shaderList[0].SetDirectionalLight(&mainLight);
+
+
+		// -------------------------------------------------------------------------------------------------------------------------
+		// Acuario
+		// ------------------------------------------------------------------------------------------------------------------------- 
+		model = glm::translate(glm::mat4(1.0f), glm::vec3(-100.0f, 5.0f, -40.0f));
+		model = glm::scale(model, glm::vec3(0.15f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+		glUniform2fv(uniformTextureOffset, 1, glm::value_ptr(toffset));
+		acuario.RenderModel();
+
+		// -------------------------------------------------------------------------------------------------------------------------
+		// Acuario2
+		// ------------------------------------------------------------------------------------------------------------------------- 
+		model = glm::translate(glm::mat4(1.0f), glm::vec3(100.0f, 0.0f, -40.0f));
+		model = glm::scale(model, glm::vec3(1.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+		glUniform2fv(uniformTextureOffset, 1, glm::value_ptr(toffset));
+		acuario2.RenderModel();
 
 		// -------------------------------------------------------------------------------------------------------------------------
 		// Orca
