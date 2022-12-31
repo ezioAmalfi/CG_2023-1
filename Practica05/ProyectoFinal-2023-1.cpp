@@ -453,7 +453,7 @@ int main()
 	 AletaDerPezAzul = Model();
 	 AletaDerPezAzul.LoadModel("Models/fish/Azul/AletaDerPezAzul.obj");
 	 AletaIzqPezAzul = Model();
-	 AletaIzqPezAzul.LoadModel("vfish/Azul/AletaIzqPezAzul.obj");
+	 AletaIzqPezAzul.LoadModel("Models/fish/Azul/AletaIzqPezAzul.obj");
 	 ColaPezAzul = Model();
 	 ColaPezAzul.LoadModel("Models/fish/Azul/ColaPezAzul.obj");
 	 CuerpoPezAzul = Model();
