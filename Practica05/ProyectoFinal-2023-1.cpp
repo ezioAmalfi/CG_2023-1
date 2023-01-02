@@ -125,6 +125,7 @@ Model CuerpoTraDelfin;
 
 Model acuario;
 Model acuario2;
+
 //Skybox
 Skybox skybox;
 
@@ -841,8 +842,6 @@ int main()
 		//glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		////AnuncioTexture.UseTexture();
 		//meshList[3]->RenderMesh();
-
-
 		//glDisable(GL_BLEND);
 
 		//HELPER PARA COLOCAR OBJETOS
