@@ -552,8 +552,9 @@ int main()
 		//información al shader de fuentes de iluminación
 		shaderList[0].SetSpotLights(spotLights, spotLightCount);
 
-		glm::mat4 model(1.0);
-		glm::mat4 modelaux(1.0);
+		glm::mat4 model(1.0); //modelos
+		glm::mat4 modelaux(1.0); //pivotes
+
 		glm::vec3 color = glm::vec3(1.0f, 1.0f, 1.0f);
 		glm::vec2 toffset = glm::vec2(0.0f, 0.0f);
 
@@ -568,7 +569,6 @@ int main()
 		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		meshList[2]->RenderMesh();
 		shaderList[0].SetDirectionalLight(&mainLight);
-
 
 		// -------------------------------------------------------------------------------------------------------------------------
 		// Acuario
@@ -595,30 +595,33 @@ int main()
 		// ------------------------------------------------------------------------------------------------------------------------- 
 
 		//CuerpoPrincipal
-		model = glm::mat4(1.0);
-		modelaux = model = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 15.0f, 0.0f));
+		modelaux = model = glm::mat4(1.0);
+		model = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 15.0f, 0.0f));
 		model = glm::scale(model, glm::vec3(1.0f));
-		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(modelaux));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		CuerpoDelOrca.RenderModel();
 
 		//CuerpoTrasero
-		model = glm::mat4(1.0);
 		model = glm::translate(modelaux, glm::vec3(0.0f, 0.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		CuerpoTraOrca.RenderModel();
 
 		//AletaIzq
 		model = glm::mat4(1.0);
 		model = glm::translate(modelaux, glm::vec3(0.0f, 0.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		AletaIzqOrca.RenderModel();
 
 		//AletaDer
 		model = glm::mat4(1.0);
 		model = glm::translate(modelaux, glm::vec3(10.0f, 0.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		AletaDerOrca.RenderModel();
 
 		//Cola
 		model = glm::mat4(1.0);
 		model = glm::translate(modelaux, glm::vec3(10.0f, 0.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		ColaOrca.RenderModel();
 
 		// -------------------------------------------------------------------------------------------------------------------------
@@ -627,29 +630,34 @@ int main()
 
 		//Torso
 		modelaux = model = glm::translate(glm::mat4(1.0f), glm::vec3(20.0f, 15.0f, 0.0f));
-		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(modelaux));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
 		glUniform2fv(uniformTextureOffset, 1, glm::value_ptr(toffset));
 		TorsoTortuga.RenderModel();
 
 		//AletaIzq
 		model = glm::translate(modelaux, glm::vec3(0.0f, 0.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		AletaIzqTortuga.RenderModel();
 
 		//AletaDer
 		model = glm::translate(modelaux, glm::vec3(0.0f, 0.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		AletaDerTortuga.RenderModel();
 
 		//AletaIzqTra
 		model = glm::translate(modelaux, glm::vec3(0.0f, 0.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		AletaTraIzqTortuga.RenderModel();
 
 		//AletaDerTra
 		model = glm::translate(modelaux, glm::vec3(0.0f, 0.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		AletaTraDerTortuga.RenderModel();
 
 		//cabeza
 		model = glm::translate(modelaux, glm::vec3(0.0f, 0.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		CabezaTortuga.RenderModel();
 
 		// -------------------------------------------------------------------------------------------------------------------------
@@ -659,28 +667,33 @@ int main()
 		//CuerpoPrincipal
 		modelaux = model = glm::translate(glm::mat4(1.0f), glm::vec3(-20.0f, 15.0f, 0.0f));
 		model = glm::scale(model, glm::vec3(5.0f));
-		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(modelaux));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		CuerpoPrinTiburon.RenderModel();
 
 		//CuerpoDelantero
 
 		model = glm::translate(modelaux, glm::vec3(0.0f, 0.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		CuerpoDelTiburon.RenderModel();
 
 		//AletaIzq
 		model = glm::translate(modelaux, glm::vec3(0.0f, 0.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		AletaIzqTiburon.RenderModel();
 
 		//AletaDer
 		model = glm::translate(modelaux, glm::vec3(0.0f, 0.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		AletaDerTiburon.RenderModel();
 
 		//Cola
 		model = glm::translate(modelaux, glm::vec3(0.0f, 0.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		ColaTiburon.RenderModel();
 
 		//Boca
 		model = glm::translate(modelaux, glm::vec3(0.0f, 0.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		BocaTiburon.RenderModel();;
 
 
@@ -696,22 +709,27 @@ int main()
 		//AletaDer
 
 		model = glm::translate(modelaux, glm::vec3(0.0f, 0.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		AletaDerPinguino.RenderModel();
 
 		//AletaIzq
 		model = glm::translate(modelaux, glm::vec3(0.0f, 0.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		AletaIzqPinguino.RenderModel();
 
 		//Cabeza
 		model = glm::translate(modelaux, glm::vec3(0.0f, 0.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		CabezaPinguino.RenderModel();
 
 		//PieDer
 		model = glm::translate(modelaux, glm::vec3(0.0f, 0.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		PieDerPinguino.RenderModel();
 
 		//PieIzq
 		model = glm::translate(modelaux, glm::vec3(0.0f, 0.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		PieIzqPinguino.RenderModel();
 	
 		// -------------------------------------------------------------------------------------------------------------------------
@@ -725,24 +743,28 @@ int main()
 		CuerpoManta.RenderModel();
 
 		////AletaSupIzq
-
-		model = glm::translate(modelaux, glm::vec3(0.0f, 0.0f, 0.0f));
+		model = glm::translate(modelaux, glm::vec3(10.0f, 10.0f, 10.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		AletaSupIzqManta.RenderModel();
 
 		//AletaSupDer
 		model = glm::translate(modelaux, glm::vec3(0.0f, 0.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		AletaSupDerManta.RenderModel();
 
 		//AletaInfDer
 		model = glm::translate(modelaux, glm::vec3(0.0f, 0.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		AletaInfDerManta.RenderModel();
 
 		//AletaInfIzq
 		model = glm::translate(modelaux, glm::vec3(0.0f, 0.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		AletaInfIzqManta.RenderModel();
 
 		//Cola
 		model = glm::translate(modelaux, glm::vec3(0.0f, 0.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		ColaManta.RenderModel();
 
 		// -------------------------------------------------------------------------------------------------------------------------
@@ -750,30 +772,35 @@ int main()
 		// ------------------------------------------------------------------------------------------------------------------------- 
 
 		//CuerpoPrincipal
-		modelaux = glm::translate(glm::mat4(1.0f), glm::vec3(90.0f, 15.0f, 0.0f));
-		model = glm::scale(model, glm::vec3(1.0f));
-		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(modelaux));
+		model = glm::translate(glm::mat4(1.0f), glm::vec3(90.0f, 15.0f, 0.0f));
+		modelaux = model = glm::scale(model, glm::vec3(1.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		CuerpoPezCafe.RenderModel();
 
 		////AletaDelDer
 
 		model = glm::translate(modelaux, glm::vec3(0.0f, 0.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		AletaDelDerPezCafe.RenderModel();
 
 		//AletaDelIzq
 		model = glm::translate(modelaux, glm::vec3(0.0f, 0.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		AletaDelIzqPezCafe.RenderModel();
 
 		//AletaTraDer
 		model = glm::translate(modelaux, glm::vec3(0.0f, 0.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		AletaTraDerPezCafe.RenderModel();
 
 		//AletaTraIzq
 		model = glm::translate(modelaux, glm::vec3(0.0f, 0.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		AletaTraIzqPezCafe.RenderModel();
 
 		//Cola
 		model = glm::translate(modelaux, glm::vec3(0.0f, 0.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		ColaPezCafe.RenderModel();
 
 
@@ -782,21 +809,24 @@ int main()
 		// ------------------------------------------------------------------------------------------------------------------------- 
 
 		//CuerpoPrincipal
-		modelaux = glm::translate(glm::mat4(1.0f), glm::vec3(-40.0f, 15.0f, 0.0f));
+		modelaux = model = glm::translate(glm::mat4(1.0f), glm::vec3(-40.0f, 15.0f, 0.0f));
 		model = glm::scale(model, glm::vec3(1.0f));
-		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(modelaux));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		CuerpoPezAzul.RenderModel();
 
 		////AletaDer
 		model = glm::translate(modelaux, glm::vec3(0.0f, 0.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		AletaDerPezAzul.RenderModel();
 
 		//AletaIzq
 		model = glm::translate(modelaux, glm::vec3(0.0f, 0.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		AletaIzqPezAzul.RenderModel();
 
 		//Cola
 		model = glm::translate(modelaux, glm::vec3(0.0f, 0.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		ColaPezAzul.RenderModel();
 
 
@@ -805,25 +835,29 @@ int main()
 		// ------------------------------------------------------------------------------------------------------------------------- 
 
 		//CuerpoPrincipal
-		modelaux = glm::translate(glm::mat4(1.0f), glm::vec3(-60.0f, 15.0f, 0.0f));
+		model = modelaux = glm::translate(glm::mat4(1.0f), glm::vec3(-60.0f, 15.0f, 0.0f));
 		model = glm::scale(model, glm::vec3(1.0f));
-		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(modelaux));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		CuerpoDelDelfin.RenderModel();
 
 		////AletaDer
 		model = glm::translate(modelaux, glm::vec3(0.0f, 0.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		AletaDerDelfin.RenderModel();
 
 		//AletaIzq
 		model = glm::translate(modelaux, glm::vec3(0.0f, 0.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		AletaIzqDelfin.RenderModel();
 
 		//Cola
 		model = glm::translate(modelaux, glm::vec3(0.0f, 0.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		ColaDelfin.RenderModel();
 
 		//CuerpoTrasero
 		model = glm::translate(modelaux, glm::vec3(0.0f, 0.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		CuerpoTraDelfin.RenderModel();
 
 		//Acá todo lo de GL_BLEND (Texturas)
