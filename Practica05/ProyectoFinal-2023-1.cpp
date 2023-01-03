@@ -70,6 +70,7 @@ Model AletaIzqOrca;
 Model ColaOrca;
 Model CuerpoDelOrca;
 Model CuerpoTraOrca;
+
 //Partes Tortuga//
 Model AletaDerTortuga;
 Model AletaIzqTortuga;
@@ -132,7 +133,6 @@ Skybox skybox;
 //materiales
 Material Material_brillante;
 Material Material_opaco;
-
 
 //Sphere cabeza = Sphere(0.5, 20, 20);
 GLfloat deltaTime = 0.0f;
@@ -407,7 +407,6 @@ int main()
 	CuerpoPrinTiburon = Model();
 	CuerpoPrinTiburon.LoadModel("Models/shark/CuerpoPrinTiburon.obj");
 
-
 	//PINGUINO//
 	AletaDerPinguino = Model();
 	AletaDerPinguino.LoadModel("Models/penguin/AletaDerPinguino.obj");
@@ -470,9 +469,7 @@ int main()
 	 CuerpoDelDelfin = Model();
 	 CuerpoDelDelfin.LoadModel("Models/dolphin/CuerpoDelDelfin.obj");
 	 CuerpoTraDelfin = Model();
-	 CuerpoTraDelfin.LoadModel("Models/dolphin/CuerpoTraDelfin.obj");
-
-	
+	 CuerpoTraDelfin.LoadModel("Models/dolphin/CuerpoTraDelfin.obj");	
 
 	skybox = Skybox(skyboxFaces);
 
