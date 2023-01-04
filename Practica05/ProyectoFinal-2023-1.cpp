@@ -136,7 +136,7 @@ Model CuerpoTraDelfin;
 
 Model acuario;
 Model acuario2;
-
+Model acuario3;
 //Skybox
 Skybox skybox;
 
@@ -620,15 +620,20 @@ int main()
 	skyboxFaces.push_back("Textures/Skybox/town_light_0_1/town_pz.png");
 	skyboxFaces.push_back("Textures/Skybox/town_light_0_1/town_nz.png");
 
-	//Carga de modelos
-	// 
+	//Carga de modelos// 
+	
 	// ACUARIO 1 //
 	acuario = Model();
 	acuario.LoadModel("Models/aquarium/aquarium.obj");
 
 	// ACUARIO 2 //
 	acuario2 = Model();
-	acuario2.LoadModel("Models/aquarium2/Fachada.obj");
+	acuario2.LoadModel("Models/aquarium2/aquarium2.obj");
+
+	// ACUARIO 3 //
+	acuario3 = Model();
+	acuario3.LoadModel("Models/acuario3/acuario3.obj");
+
 	//ORCA//
 	AletaDerOrca = Model();
 	AletaDerOrca.LoadModel("Models/orca/AletaDerOrca.obj");
@@ -866,12 +871,22 @@ int main()
 		// -------------------------------------------------------------------------------------------------------------------------
 		// Acuario2
 		// ------------------------------------------------------------------------------------------------------------------------- 
-		model = glm::translate(glm::mat4(1.0f), glm::vec3(100.0f, 0.0f, -40.0f));
+		model = glm::translate(glm::mat4(1.0f), glm::vec3(200.0f, 0.0f, -40.0f));
 		model = glm::scale(model, glm::vec3(1.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
 		glUniform2fv(uniformTextureOffset, 1, glm::value_ptr(toffset));
 		acuario2.RenderModel();
+
+		// -------------------------------------------------------------------------------------------------------------------------
+		// Acuario3
+		// ------------------------------------------------------------------------------------------------------------------------- 
+		model = glm::translate(glm::mat4(1.0f), glm::vec3(100.0f, 0.0f, 300.0f));
+		model = glm::scale(model, glm::vec3(3.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+		glUniform2fv(uniformTextureOffset, 1, glm::value_ptr(toffset));
+		acuario3.RenderModel();
 
 		// -------------------------------------------------------------------------------------------------------------------------
 		// Orca
@@ -897,13 +912,13 @@ int main()
 
 		//AletaDer
 		model = glm::mat4(1.0);
-		model = glm::translate(modelaux, glm::vec3(10.0f, 0.0f, 0.0f));
+		model = glm::translate(modelaux, glm::vec3(0.0f, 0.0f, 0.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		AletaDerOrca.RenderModel();
 
 		//Cola
 		model = glm::mat4(1.0);
-		model = glm::translate(modelaux, glm::vec3(10.0f, 0.0f, 0.0f));
+		model = glm::translate(modelaux, glm::vec3(0.0f, 0.0f, 0.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		ColaOrca.RenderModel();
 
