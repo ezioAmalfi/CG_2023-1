@@ -58,6 +58,16 @@ std::vector<Shader> shaderList;
 
 Camera camera;
 
+//variables animación por KeyFrames
+#include <iostream>
+#include <fstream>
+using namespace std;
+float reproduciranimacion, habilitaranimacion, guardoFrame,
+reinicioFrame, ciclo, ciclo2, contador = 0;
+string KeyframesValues = "valores.txt";
+ofstream archivo;
+//finaliza keyframes
+
 //Texturas
 Texture pisoTexture;
 
@@ -270,6 +280,258 @@ void CreateShaders()
 	shader1->CreateFromFiles(vShader, fShader);
 	shaderList.push_back(*shader1);
 }
+
+///////////////////////////////KEYFRAMES/////////////////////
+bool animacion = false;
+float posXcar = -0.4, posYcar = -0.3, posZcar = 0.7;
+float movCar_x = 0.0f, movCar_y = 0.0f, movCar_z = 0.0f;
+float giroCar_x = -90, giroCar_y = -47, giroCar_z = 0;
+
+#define MAX_FRAMES 30
+int i_max_steps = 90;
+int i_curr_steps = 1;
+typedef struct _frame
+{
+	//Variables para GUARDAR Key Frames
+	float movCar_x;
+	float movCar_y;
+	float movCar_z;
+	float movCar_xInc;
+	float movCar_yInc;
+	float movCar_zInc;
+	float giroCar_x;
+	float giroCar_xInc;
+	float giroCar_y;
+	float giroCar_yInc;
+	float giroCar_z;
+	float giroCar_zInc;
+}FRAME;
+
+FRAME KeyFrame[MAX_FRAMES];
+int FrameIndex = 1;
+bool play = false;
+int playIndex = 0;
+
+void saveFrame()
+{
+	printf("\tFrameIndex[%d]-> movX:%f, movY:%f, movZ:%f, giroX:%f, giroY:%f, giroZ:%f\n",
+		FrameIndex, movCar_x, movCar_y, movCar_z, giroCar_x, giroCar_y, giroCar_z);
+
+
+	KeyFrame[FrameIndex].movCar_x = movCar_x;
+	KeyFrame[FrameIndex].movCar_y = movCar_y;
+	KeyFrame[FrameIndex].movCar_z = movCar_z;
+	KeyFrame[FrameIndex].giroCar_x = giroCar_x;
+	KeyFrame[FrameIndex].giroCar_y = giroCar_y;
+	KeyFrame[FrameIndex].giroCar_z = giroCar_z;
+
+	archivo << ("\tFrameIndex[%d]-> movX:%f, movY:%f, movZ:%f, giroX:%f, giroY:%f, giroZ:%f\n",
+		FrameIndex, movCar_x, movCar_y, movCar_z, giroCar_x, giroCar_y, giroCar_z);
+	FrameIndex++;
+}
+
+void resetElements(void)
+{
+	movCar_x = KeyFrame[0].movCar_x;
+	movCar_y = KeyFrame[0].movCar_y;
+	movCar_z = KeyFrame[0].movCar_z;
+
+	giroCar_x = KeyFrame[0].giroCar_x;
+	giroCar_y = KeyFrame[0].giroCar_y;
+	giroCar_z = KeyFrame[0].giroCar_z;
+}
+
+void interpolation(void)
+{
+	KeyFrame[playIndex].movCar_xInc = (KeyFrame[playIndex + 1].movCar_x - KeyFrame[playIndex].movCar_x) / i_max_steps;
+	KeyFrame[playIndex].movCar_yInc = (KeyFrame[playIndex + 1].movCar_y - KeyFrame[playIndex].movCar_y) / i_max_steps;
+	KeyFrame[playIndex].movCar_zInc = (KeyFrame[playIndex + 1].movCar_z - KeyFrame[playIndex].movCar_z) / i_max_steps;
+	KeyFrame[playIndex].giroCar_xInc = (KeyFrame[playIndex + 1].giroCar_x - KeyFrame[playIndex].giroCar_x) / i_max_steps;
+	KeyFrame[playIndex].giroCar_yInc = (KeyFrame[playIndex + 1].giroCar_y - KeyFrame[playIndex].giroCar_y) / i_max_steps;
+	KeyFrame[playIndex].giroCar_zInc = (KeyFrame[playIndex + 1].giroCar_z - KeyFrame[playIndex].giroCar_z) / i_max_steps;
+}
+
+void animate(void)
+{
+	if (play)
+	{
+		if (i_curr_steps >= i_max_steps)
+		{
+			playIndex++;
+			printf("playindex : %d\n", playIndex);
+			if (playIndex > FrameIndex - 2)
+			{
+				printf("Frame index= %d\n", FrameIndex);
+				printf("termina animacion\n");
+				playIndex = 0;
+				play = false;
+			}
+			else
+			{
+				i_curr_steps = 0;
+				interpolation();
+			}
+		}
+		else
+		{
+			movCar_x += KeyFrame[playIndex].movCar_xInc;
+			movCar_y += KeyFrame[playIndex].movCar_yInc;
+			movCar_z += KeyFrame[playIndex].movCar_zInc;
+			giroCar_x += KeyFrame[playIndex].giroCar_xInc;
+			giroCar_y += KeyFrame[playIndex].giroCar_yInc;
+			giroCar_z += KeyFrame[playIndex].giroCar_zInc;
+			i_curr_steps++;
+		}
+	}
+}
+
+//PARA INPUT CON KEYFRAMES 
+void inputKeyframes(bool* keys)
+{
+	if (keys[GLFW_KEY_SPACE])
+	{
+		if (reproduciranimacion < 1)
+		{
+			if (play == false && (FrameIndex > 1))
+			{
+				resetElements();
+				interpolation();
+				play = true;
+				playIndex = 0;
+				i_curr_steps = 0;
+				reproduciranimacion++;
+				habilitaranimacion = 0;
+				//printf("\n presiona 0 para habilitar reproducir de nuevo la animación'\n");
+			}
+			else
+			{
+				play = false;
+			}
+		}
+	}
+	if (keys[GLFW_KEY_0])
+	{
+		if (habilitaranimacion < 1)
+		{
+			reproduciranimacion = 0;
+		}
+	}
+	if (keys[GLFW_KEY_L])
+	{
+		if (guardoFrame < 1)
+		{
+			saveFrame();
+			//printf(" \npresiona P para habilitar guardar otro frame'\n");
+			guardoFrame++;
+			reinicioFrame = 0;
+		}
+	}
+	if (keys[GLFW_KEY_P])
+	{
+		if (reinicioFrame < 1)
+		{
+			guardoFrame = 0;
+		}
+	}
+	if (keys[GLFW_KEY_R])
+	{
+		if (ciclo2 < 1)
+		{
+			ciclo = 0;
+		}
+	}
+	if (keys[GLFW_KEY_1])
+	{
+		if (ciclo < 1)
+		{
+			movCar_x += 0.1f;
+			ciclo++;
+			ciclo2 = 0;
+			//printf("\n reinicia con R\n");
+		}
+	}
+	if (keys[GLFW_KEY_2])
+	{
+		if (ciclo < 1)
+		{
+			movCar_x -= 0.1f;
+			ciclo++;
+			ciclo2 = 0;
+			//printf("\n reinicia con R\n");
+		}
+	}
+	if (keys[GLFW_KEY_3])
+	{
+		if (ciclo < 1)
+		{
+			movCar_y += 0.1f;
+			ciclo++;
+			ciclo2 = 0;
+			//printf("\n reinicia con R\n");
+		}
+	}
+	if (keys[GLFW_KEY_4])
+	{
+		if (ciclo < 1)
+		{
+			movCar_y -= 0.1f;
+			ciclo++;
+			ciclo2 = 0;
+			//printf("\n reinicia con R\n");
+		}
+	}
+	if (keys[GLFW_KEY_5])
+	{
+		if (ciclo < 1)
+		{
+			movCar_z += 0.1f;
+			ciclo++;
+			ciclo2 = 0;
+			//printf("\n reinicia con 2\n");
+		}
+	}
+	if (keys[GLFW_KEY_6])
+	{
+		if (ciclo < 1)
+		{
+			movCar_z -= 0.1f;
+			ciclo++;
+			ciclo2 = 0;
+			//printf("\n reinicia con R\n");
+		}
+	}
+	if (keys[GLFW_KEY_7])
+	{
+		if (ciclo < 1)
+		{
+			giroCar_x += 1.0f;
+			ciclo++;
+			ciclo2 = 0;
+			//printf("\n reinicia con R\n");
+		}
+	}
+	if (keys[GLFW_KEY_8])
+	{
+		if (ciclo < 1)
+		{
+			giroCar_y += 1.0f;
+			ciclo++;
+			ciclo2 = 0;
+			//printf("\n reinicia con R\n");
+		}
+	}
+	if (keys[GLFW_KEY_9])
+	{
+		if (ciclo < 1)
+		{
+			giroCar_z += 1.0f;
+			ciclo++;
+			ciclo2 = 0;
+			//printf("\n reinicia con R\n");
+		}
+	}
+}
+
 
 int main()
 {
@@ -508,6 +770,14 @@ int main()
 	glm::mat4 projection = glm::perspective(45.0f, (GLfloat)mainWindow.getBufferWidth() / mainWindow.getBufferHeight(), 0.1f, 1000.0f);
 
 
+	//KEYFRAMES DECLARADOS INICIALES
+	KeyFrame[0].movCar_x = -0.4f;
+	KeyFrame[0].movCar_y = -0.3f;
+	KeyFrame[0].movCar_z = 0.7f;
+	KeyFrame[0].giroCar_x = 90;
+	KeyFrame[0].giroCar_y = -47;
+	KeyFrame[0].giroCar_z = 0;
+
 	////Loop mientras no se cierra la ventana
 	while (!mainWindow.getShouldClose())
 	{
@@ -520,6 +790,10 @@ int main()
 		glfwPollEvents();
 		camera.keyControl(mainWindow.getsKeys(), deltaTime);
 		camera.mouseControl(mainWindow.getXChange(), mainWindow.getYChange());
+
+		//para keyframes
+		inputKeyframes(mainWindow.getsKeys());
+		animate();
 
 		// Clear the window
 		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
@@ -566,6 +840,18 @@ int main()
 		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		meshList[2]->RenderMesh();
 		shaderList[0].SetDirectionalLight(&mainLight);
+
+		//Ejemplo de movimiento con KeyFrame
+		/*model = glm::mat4(1.0);
+		posCar = glm::vec3(posXcar + movCar_x, posYcar + movCar_y, posZcar + movCar_z);
+		model = glm::translate(model, posCar);
+		model = glm::scale(model, glm::vec3(0.001f, 0.001f, 0.001f));
+		model = glm::rotate(model, giroCar_y * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		model = glm::rotate(model, giroCar_x * toRadians, glm::vec3(1.0f, 0.0f, 0.0f));
+		model = glm::rotate(model, giroCar_z * toRadians, glm::vec3(0.0f, 0.0f, 1.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		Kitt_M.RenderModel();*/
 
 		// -------------------------------------------------------------------------------------------------------------------------
 		// Acuario
