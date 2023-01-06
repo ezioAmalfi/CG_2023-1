@@ -139,6 +139,13 @@ Model acuario2;
 Model estPingu;
 Model AcuarioTortuga;
 Model AcuarioPez;
+Model AcuarioExt;
+
+Model marco1;
+Model marco2;
+Model marco3;
+
+Model reja;
 
 //Skybox
 Skybox skybox;
@@ -641,6 +648,25 @@ int main()
 	AcuarioPez = Model();
 	AcuarioPez.LoadModel("Models/AcuarioPez/AcuarioPez.obj");
 
+	// AcuarioExt //
+	AcuarioExt = Model();
+	AcuarioExt.LoadModel("Models/AcuarioExt/AcuarioExt.obj");
+
+	// marco1 //
+	marco1 = Model();
+	marco1.LoadModel("Models/marcos/marco1.obj");
+
+	// marco2 //
+	marco2 = Model();
+	marco2.LoadModel("Models/marcos/marco2.obj");
+
+	// marco3 //
+	marco3 = Model();
+	marco3.LoadModel("Models/marcos/marco3.obj");
+
+	// reja //
+	reja = Model();
+	reja.LoadModel("Models/reja/reja.obj");
 
 	//ORCA//
 	AletaDerOrca = Model();
@@ -907,6 +933,55 @@ int main()
 		glUniform2fv(uniformTextureOffset, 1, glm::value_ptr(toffset));
 		AcuarioPez.RenderModel();
 
+		// -------------------------------------------------------------------------------------------------------------------------
+		// AcuarioExt
+		// ------------------------------------------------------------------------------------------------------------------------- 
+		model = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.2f, 0.0f));
+		model = glm::scale(model, glm::vec3(1.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+		glUniform2fv(uniformTextureOffset, 1, glm::value_ptr(toffset));
+		AcuarioExt.RenderModel();
+
+		// -------------------------------------------------------------------------------------------------------------------------
+		// Marco1
+		// ------------------------------------------------------------------------------------------------------------------------- 
+		model = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, 0.0f));
+		model = glm::scale(model, glm::vec3(1.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+		glUniform2fv(uniformTextureOffset, 1, glm::value_ptr(toffset));
+		marco1.RenderModel();
+
+		// -------------------------------------------------------------------------------------------------------------------------
+		// Marco2
+		// ------------------------------------------------------------------------------------------------------------------------- 
+		model = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, 0.0f));
+		model = glm::scale(model, glm::vec3(1.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+		glUniform2fv(uniformTextureOffset, 1, glm::value_ptr(toffset));
+		marco2.RenderModel();
+
+		// -------------------------------------------------------------------------------------------------------------------------
+		// Marco3
+		// ------------------------------------------------------------------------------------------------------------------------- 
+		model = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, 0.0f));
+		model = glm::scale(model, glm::vec3(1.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+		glUniform2fv(uniformTextureOffset, 1, glm::value_ptr(toffset));
+		marco3.RenderModel();
+
+		// -------------------------------------------------------------------------------------------------------------------------
+		// reja
+		// ------------------------------------------------------------------------------------------------------------------------- 
+		model = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, 0.0f));
+		model = glm::scale(model, glm::vec3(10.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+		glUniform2fv(uniformTextureOffset, 1, glm::value_ptr(toffset));
+		reja.RenderModel();
 		// -------------------------------------------------------------------------------------------------------------------------
 		// Orca
 		// ------------------------------------------------------------------------------------------------------------------------- 
