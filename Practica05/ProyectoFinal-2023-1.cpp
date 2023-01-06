@@ -138,6 +138,7 @@ Model acuario2;
 
 Model estPingu;
 Model AcuarioTortuga;
+Model AcuarioPez;
 
 //Skybox
 Skybox skybox;
@@ -636,6 +637,10 @@ int main()
 	AcuarioTortuga = Model();
 	AcuarioTortuga.LoadModel("Models/AcuarioTortuga/AcuarioTortuga.obj");
 
+	// AcuarioPez //
+	AcuarioPez = Model();
+	AcuarioPez.LoadModel("Models/AcuarioPez/AcuarioPez.obj");
+
 
 	//ORCA//
 	AletaDerOrca = Model();
@@ -892,7 +897,15 @@ int main()
 		glUniform2fv(uniformTextureOffset, 1, glm::value_ptr(toffset));
 		AcuarioTortuga.RenderModel();
 
-
+		// -------------------------------------------------------------------------------------------------------------------------
+		// AcuarioTortuga
+		// ------------------------------------------------------------------------------------------------------------------------- 
+		model = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, 0.0f));
+		model = glm::scale(model, glm::vec3(1.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+		glUniform2fv(uniformTextureOffset, 1, glm::value_ptr(toffset));
+		AcuarioPez.RenderModel();
 
 		// -------------------------------------------------------------------------------------------------------------------------
 		// Orca
