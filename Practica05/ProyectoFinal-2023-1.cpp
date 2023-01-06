@@ -70,6 +70,8 @@ ofstream archivo;
 
 //Texturas
 Texture pisoTexture;
+Texture aguaTexture;
+Texture anuncioTexture;
 
 //Modelos
 Model Scenario_M;
@@ -210,34 +212,6 @@ void CreateObjects()
 		0, 1, 2
 	};
 
-	unsigned int pantallaIndices[] = {
-		0, 1, 2, 2, 3, 0, 1, 5, 6, 6, 2, 1, 7, 6, 5,
-		5, 4, 7, 4, 0, 3, 3, 7, 4, 4, 5, 1, 1, 0, 4
-	};
-
-	unsigned int imagenIndices[] = { //Plano top
-		3, 2, 6, 6, 7, 3
-	};
-
-	GLfloat animacion1Vertices[] = {
-		-1.0f, -1.0f, -0.6f,	0.0f, 0.0f,		0.0f, 0.0f, 0.0f,
-		0.0f, -1.0f, 1.0f,		0.005f, 0.0f,	0.0f, 0.0f, 0.0f,
-		1.0f, -1.0f, -0.6f,		0.005f, 1.0f,	0.0f, 0.0f, 0.0f,
-		0.0f, 1.0f, 0.0f,		0.0f, 1.0f,		0.0f, 0.0f, 0.0f
-	};
-
-	GLfloat pantallaVertices[] = {
-		-0.5f, -0.5f,  0.5f,	0.0f, 0.0f,		0.0f, 0.0f, 0.0f,
-		0.5f, -0.5f,  0.5f,		1.0f, 0.0f,		0.0f, 0.0f, 0.0f,
-		0.5f,  0.5f,  0.5f,		1.0f, 1.0f,		0.0f, 0.0f, 0.0f,
-		-0.5f,  0.5f,  0.5f,	0.0f, 1.0f,		0.0f, 0.0f, 0.0f,
-
-		-0.5f, -0.5f, -0.5f,	0.0f, 0.0f,		0.0f, 0.0f, 0.0f,
-		0.5f, -0.5f, -0.5f,		1.0f, 0.0f,		0.0f, 0.0f, 0.0f,
-		0.5f,  0.5f, -0.5f,		1.0f, 1.0f,		0.0f, 0.0f, 0.0f,
-		-0.5f,  0.5f, -0.5f, 	0.0f, 1.0f,		0.0f, 0.0f, 0.0f,
-	};
-
 	GLfloat vertices[] = {
 		//	x      y      z			u	  v			nx	  ny    nz
 			-1.0f, -1.0f, -0.6f,	0.0f, 0.0f,		0.0f, 0.0f, 0.0f,
@@ -258,17 +232,16 @@ void CreateObjects()
 		15.0f, 0.0f, 15.0f,		15.0f, 15.0f,	0.0f, -1.0f, 0.0f
 	};
 
-	unsigned int flechaIndices[] = {
+	unsigned int aguaIndices[] = {
 	   0, 1, 2,
 	   0, 2, 3,
 	};
 
-	GLfloat flechaVertices[] = {
-		-0.5f, 0.0f, 0.5f,		0.0f, 0.0f,		0.0f, -1.0f, 0.0f,
-		0.5f, 0.0f, 0.5f,		1.0f, 0.0f,		0.0f, -1.0f, 0.0f,
-		0.5f, 0.0f, -0.5f,		1.0f, 1.0f,		0.0f, -1.0f, 0.0f,
-		-0.5f, 0.0f, -0.5f,		0.0f, 1.0f,		0.0f, -1.0f, 0.0f,
-
+	GLfloat aguaVertices[] = {
+		0.0f, 0.0f, 0.0f,		0.0f, 0.0f,		0.0f, 0.0f, -1.0f,
+		0.0f, 1.0f, 0.0f,		1.0f, 0.0f,		0.0f, 0.0f, -1.0f,
+		0.0f, 1.0f, 1.0f,		1.0f, 1.0f,		0.0f, 0.0f, -1.0f,
+		0.0f, 0.0f, 1.0f,		0.0f, 1.0f,		0.0f, 0.0f, -1.0f,
 	};
 
 	Mesh* obj1 = new Mesh();
@@ -276,7 +249,7 @@ void CreateObjects()
 	meshList.push_back(obj1);
 
 	Mesh* obj2 = new Mesh();
-	obj2->CreateMesh(vertices, indices, 32, 12);
+	obj2->CreateMesh(aguaVertices, aguaIndices, 32, 6);
 	meshList.push_back(obj2);
 
 	//textura piso
@@ -540,6 +513,8 @@ int main()
 	//Carga de texturas
 	pisoTexture = Texture("Textures/piso.tga");
 	pisoTexture.LoadTextureA();
+	aguaTexture = Texture("Textures/aguaTex.tga");
+	aguaTexture.LoadTextureA();
 
 	std::vector<std::string> skyboxFaces;
 	std::vector<std::string> nowSkybox;
@@ -909,9 +884,9 @@ int main()
 		glUniform2fv(uniformTextureOffset, 1, glm::value_ptr(toffset));
 		AcuarioPez.RenderModel();
 
-		// -------------------------------------------------------------------------------------------------------------------------
-		// AcuarioOrca
-		// ------------------------------------------------------------------------------------------------------------------------- 
+		/* -------------------------------------------------------------------------------------------------------------------------
+		 AcuarioOrca
+		 ------------------------------------------------------------------------------------------------------------------------- */
 		model = glm::translate(glm::mat4(1.0f), glm::vec3(75.0f, 0.4f, -290.0f));
 		model = glm::scale(model, glm::vec3(4.5f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
@@ -1040,7 +1015,7 @@ int main()
 
 		//Torso
 		model = glm::translate(glm::mat4(1.0f), glm::vec3(-82.0f, 10.0f, -26.0f));
-		//model = glm::scale(model, glm::vec3(0.12f));
+		model = glm::scale(model, glm::vec3(0.12f));
 		model = glm::rotate(model, rotBody * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		model = glm::translate(model, glm::vec3(movBody, 0.0f, .0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
@@ -1110,7 +1085,7 @@ int main()
 		//Boca
 		model = glm::translate(modelaux, glm::vec3(0.0f, 0.0f, 0.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		BocaTiburon.RenderModel();;
+		BocaTiburon.RenderModel();
 
 
 		// -------------------------------------------------------------------------------------------------------------------------
@@ -1235,7 +1210,7 @@ int main()
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		CuerpoPezAzul.RenderModel();
 
-		////AletaDer
+		//AletaDer
 		model = glm::translate(modelaux, glm::vec3(0.0f, 0.0f, 0.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		AletaDerPezAzul.RenderModel();
@@ -1262,7 +1237,7 @@ int main()
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		CuerpoDelDelfin.RenderModel();
 
-		////AletaDer
+		//AletaDer
 		model = glm::translate(modelaux, glm::vec3(0.0f, 0.0f, 0.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		AletaDerDelfin.RenderModel();
@@ -1282,23 +1257,6 @@ int main()
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		CuerpoTraDelfin.RenderModel();
 
-		//Acá todo lo de GL_BLEND (Texturas)
-		glEnable(GL_BLEND);
-		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-		////Textura de anuncio en pantalla
-		//toffsetu += 0.0001;
-		//if (toffsetu > 1.0) toffsetu = 0.0;
-		//toffset = glm::vec2(toffsetu, 0.0f);
-		//model = glm::mat4(1.0);
-		//model = glm::scale(model, glm::vec3(200.0f, 1.0f, 50.0f));
-		////model = glm::translate(model, glm::vec3(200.0f, 100.0f, 50.0f));
-		////model = glm::rotate(model, 90 * toRadians, glm::vec3(0.0f, 0.0f, 0.0f));
-		//glUniform2fv(uniformTextureOffset, 1, glm::value_ptr(toffset));
-		//glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		////AnuncioTexture.UseTexture();
-		//meshList[3]->RenderMesh();
-		//glDisable(GL_BLEND);
 
 		//HELPER PARA COLOCAR OBJETOS
 		if (delay_helper >= 50.0f) {
@@ -1309,7 +1267,35 @@ int main()
 		delay_helper += deltaTime;
 
 		// SECCION PARA ANIMACIÓN
+		//GL_BLEND (Texturas Animadas)
+		glEnable(GL_BLEND);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
+		//Textura de agua
+		toffsetu += 0.001;		
+		if (toffsetu > 1.0) toffsetu = 0.0;	
+		toffset = glm::vec2(toffsetu,0.0f);
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(-72.0f, 1.0, -102.0));
+		model = glm::scale(model, glm::vec3(0.0f, 30.0f, 118.0f));
+		glUniform2fv(uniformTextureOffset, 1, glm::value_ptr(toffset));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		aguaTexture.UseTexture();
+		meshList[1]->RenderMesh();
+
+		//Textura de anuncio
+		toffsetv += 0.00001;
+		if (toffsetv > 1.0) toffsetv = 0.0;
+		toffset = glm::vec2(0.0f, toffsetv);
+		model = glm::mat4(1.0);
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(-72.0f, 1.0, -102.0));
+		model = glm::scale(model, glm::vec3(0.0f, 30.0f, 118.0f));
+		glUniform2fv(uniformTextureOffset, 1, glm::value_ptr(toffset));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		aguaTexture.UseTexture();
+		meshList[1]->RenderMesh();
+		glDisable(GL_BLEND);
 
 
 		// Ciclado Dia-Noche de la luz direccional
