@@ -292,30 +292,31 @@ void CreateShaders()
 	shaderList.push_back(*shader1);
 }
 
-///////////////////////////////KEYFRAMES/////////////////////
+// -------------------------------------------------------------------------------------------------------------//
+//													KEYFRAMES										   		    //
+// -------------------------------------------------------------------------------------------------------------// 
 bool animacion = false;
-float posXcar = -0.4, posYcar = -0.3, posZcar = 0.7;
-float movCar_x = 0.0f, movCar_y = 0.0f, movCar_z = 0.0f;
-float giroCar_x = -90, giroCar_y = -47, giroCar_z = 0;
+float posAleFrontIzq = 0.0, posAleFrontDer = 0.0, posAleTrasIzq = 0.0, posAleTrasDer = 0.0, posBody = 0.0, rotBody = 0.0;
+float movAleFrontIzq = 0.0, movAleFrontDer = 0.0, movAleTrasIzq = 0.0, movAleTrasDer = 0.0, movBody = 0.0, movRotBody = 0.0;
 
 #define MAX_FRAMES 30
 int i_max_steps = 90;
 int i_curr_steps = 1;
 typedef struct _frame
 {
-	//Variables para GUARDAR Key Frames
-	float movCar_x;
-	float movCar_y;
-	float movCar_z;
-	float movCar_xInc;
-	float movCar_yInc;
-	float movCar_zInc;
-	float giroCar_x;
-	float giroCar_xInc;
-	float giroCar_y;
-	float giroCar_yInc;
-	float giroCar_z;
-	float giroCar_zInc;
+	float movAleFrontIzqT;
+	float movAleFrontDerT;
+	float movAleTrasIzqT;
+	float movAleTrasDerT;
+	float movBodyT;
+	float rotBodyT;
+
+	float movAleFrontIzqT_Inc;
+	float movAleFrontDerT_Inc;
+	float movAleTrasIzqT_Inc;
+	float movAleTrasDerT_Inc;
+	float movBodyT_Inc;
+	float rotBodyT_Inc;
 }FRAME;
 
 FRAME KeyFrame[MAX_FRAMES];
@@ -325,41 +326,172 @@ int playIndex = 0;
 
 void saveFrame()
 {
-	printf("\tFrameIndex[%d]-> movX:%f, movY:%f, movZ:%f, giroX:%f, giroY:%f, giroZ:%f\n",
-		FrameIndex, movCar_x, movCar_y, movCar_z, giroCar_x, giroCar_y, giroCar_z);
+	printf("\tSaveFrame[%d: -> movAletaFrontalIzquierda:%f, movAletaFrontalDerecha:%f, movAletaTraseraIzquierda:%f, movAletaTraseraDerecha:%f, movCuerpo:%f, rotCuerpo:%f]\n",
+		FrameIndex, movAleFrontIzq, movAleFrontDer, movAleTrasIzq, movAleTrasDer, movBody, movRotBody);
 
-
-	KeyFrame[FrameIndex].movCar_x = movCar_x;
-	KeyFrame[FrameIndex].movCar_y = movCar_y;
-	KeyFrame[FrameIndex].movCar_z = movCar_z;
-	KeyFrame[FrameIndex].giroCar_x = giroCar_x;
-	KeyFrame[FrameIndex].giroCar_y = giroCar_y;
-	KeyFrame[FrameIndex].giroCar_z = giroCar_z;
-
-	archivo << ("\tFrameIndex[%d]-> movX:%f, movY:%f, movZ:%f, giroX:%f, giroY:%f, giroZ:%f\n",
-		FrameIndex, movCar_x, movCar_y, movCar_z, giroCar_x, giroCar_y, giroCar_z);
+	KeyFrame[FrameIndex].movAleFrontDerT = movAleFrontDer;
+	KeyFrame[FrameIndex].movAleFrontIzqT = movAleFrontIzq;
+	KeyFrame[FrameIndex].movAleTrasDerT = movAleTrasDer;
+	KeyFrame[FrameIndex].movAleTrasIzqT = movAleTrasIzq;
+	KeyFrame[FrameIndex].movBodyT = movBody;
+	KeyFrame[FrameIndex].rotBodyT = movRotBody;
 	FrameIndex++;
 }
 
 void resetElements(void)
 {
-	movCar_x = KeyFrame[0].movCar_x;
-	movCar_y = KeyFrame[0].movCar_y;
-	movCar_z = KeyFrame[0].movCar_z;
-
-	giroCar_x = KeyFrame[0].giroCar_x;
-	giroCar_y = KeyFrame[0].giroCar_y;
-	giroCar_z = KeyFrame[0].giroCar_z;
+	movAleFrontIzq = KeyFrame[0].movAleFrontIzqT;
+	movAleFrontDer = KeyFrame[0].movAleFrontDerT;
+	movAleTrasDer = KeyFrame[0].movAleTrasDerT;
+	movAleTrasIzq = KeyFrame[0].movAleTrasIzqT;
+	movBody = KeyFrame[0].movBodyT;
+	movRotBody = KeyFrame[0].rotBodyT;
 }
 
 void interpolation(void)
 {
-	KeyFrame[playIndex].movCar_xInc = (KeyFrame[playIndex + 1].movCar_x - KeyFrame[playIndex].movCar_x) / i_max_steps;
-	KeyFrame[playIndex].movCar_yInc = (KeyFrame[playIndex + 1].movCar_y - KeyFrame[playIndex].movCar_y) / i_max_steps;
-	KeyFrame[playIndex].movCar_zInc = (KeyFrame[playIndex + 1].movCar_z - KeyFrame[playIndex].movCar_z) / i_max_steps;
-	KeyFrame[playIndex].giroCar_xInc = (KeyFrame[playIndex + 1].giroCar_x - KeyFrame[playIndex].giroCar_x) / i_max_steps;
-	KeyFrame[playIndex].giroCar_yInc = (KeyFrame[playIndex + 1].giroCar_y - KeyFrame[playIndex].giroCar_y) / i_max_steps;
-	KeyFrame[playIndex].giroCar_zInc = (KeyFrame[playIndex + 1].giroCar_z - KeyFrame[playIndex].giroCar_z) / i_max_steps;
+	KeyFrame[playIndex].movAleFrontDerT_Inc = (KeyFrame[playIndex + 1].movAleFrontDerT - KeyFrame[playIndex].movAleFrontDerT) / i_max_steps;
+	KeyFrame[playIndex].movAleFrontIzqT_Inc = (KeyFrame[playIndex + 1].movAleFrontIzqT - KeyFrame[playIndex].movAleFrontIzqT) / i_max_steps;
+	KeyFrame[playIndex].movAleTrasDerT_Inc = (KeyFrame[playIndex + 1].movAleTrasDerT - KeyFrame[playIndex].movAleTrasDerT) / i_max_steps;
+	KeyFrame[playIndex].movAleTrasIzqT_Inc = (KeyFrame[playIndex + 1].movAleTrasIzqT - KeyFrame[playIndex].movAleTrasIzqT) / i_max_steps;
+	KeyFrame[playIndex].movBodyT_Inc = (KeyFrame[playIndex + 1].movBodyT - KeyFrame[playIndex].movBodyT) / i_max_steps;
+	KeyFrame[playIndex].rotBodyT_Inc = (KeyFrame[playIndex + 1].rotBodyT - KeyFrame[playIndex].rotBodyT) / i_max_steps;
+}
+
+void inputKeyframes(bool* keys)
+{
+	if (keys[GLFW_KEY_SPACE])
+	{
+		if (reproduciranimacion < 1)
+		{
+			if (play == false && (FrameIndex > 1))
+			{
+				resetElements();
+				interpolation();
+				play = true;
+				playIndex = 0;
+				i_curr_steps = 0;
+				reproduciranimacion++;
+				habilitaranimacion = 0;
+				//printf("\n Presiona 0 para habilitar reproducir de nuevo la animación'\n");
+			}
+			else
+			{
+				play = false;
+			}
+		}
+	}
+	if (keys[GLFW_KEY_0])
+	{
+		if (habilitaranimacion < 1)
+		{
+			reproduciranimacion = 0;
+		}
+	}	
+	if (keys[GLFW_KEY_1]) //Aleta Frontal Derecha
+	{
+		if (ciclo < 1)
+		{
+			movAleFrontDer += 0.1f;
+			ciclo++;
+			ciclo2 = 0;
+			//printf("\n reinicia con R\n");
+		}
+	}
+	if (keys[GLFW_KEY_2]) //Aleta Frontal Izquierda
+	{
+		if (ciclo < 1)
+		{
+			movAleFrontIzq += 0.1f;
+			ciclo++;
+			ciclo2 = 0;
+			//printf("\n reinicia con R\n");
+		}
+	}
+	if (keys[GLFW_KEY_3]) //Aleta Trasera Derecha
+	{
+		if (ciclo < 1)
+		{
+			movAleTrasDer += 0.1f;
+			ciclo++;
+			ciclo2 = 0;
+			//printf("\n reinicia con R\n");
+		}
+	}
+	if (keys[GLFW_KEY_4]) //Aleta Trasera Izquierda
+	{
+		if (ciclo < 1)
+		{
+			movAleTrasIzq += 0.1f;
+			ciclo++;
+			ciclo2 = 0;
+			//printf("\n reinicia con R\n");
+		}
+	}
+	if (keys[GLFW_KEY_5]) //Movimiento del cuerpo (adelante)
+	{
+		if (ciclo < 1)
+		{
+			movBody += 0.1f;
+			ciclo++;
+			ciclo2 = 0;
+			//printf("\n reinicia con 2\n");
+		}
+	}
+	if (keys[GLFW_KEY_6]) //Movimiento del cuerpo (atrás)
+	{
+		if (ciclo < 1)
+		{
+			movBody -= 0.1f;
+			ciclo++;
+			ciclo2 = 0;
+			//printf("\n reinicia con R\n");
+		}
+	}
+	if (keys[GLFW_KEY_7]) //Rotación del cuerpo (izq)
+	{
+		if (ciclo < 1)
+		{
+			rotBody -= 1.0f;
+			ciclo++;
+			ciclo2 = 0;
+			//printf("\n reinicia con R\n");
+		}
+	}
+	if (keys[GLFW_KEY_8]) //Rotación del cuerpo (der)
+	{
+		if (ciclo < 1)
+		{
+			rotBody += 1.0f;
+			ciclo++;
+			ciclo2 = 0;
+			//printf("\n reinicia con R\n");
+		}
+	}
+	if (keys[GLFW_KEY_L])
+	{
+		if (guardoFrame < 1)
+		{
+			saveFrame();
+			//printf(" \nPresiona P para habilitar guardar otro frame'\n");
+			guardoFrame++;
+			reinicioFrame = 0;
+		}
+	}
+	if (keys[GLFW_KEY_P])
+	{
+		if (reinicioFrame < 1)
+		{
+			guardoFrame = 0;
+		}
+	}
+	if (keys[GLFW_KEY_R])
+	{
+		if (ciclo2 < 1)
+		{
+			ciclo = 0;
+		}
+	}
 }
 
 void animate(void)
@@ -385,164 +517,16 @@ void animate(void)
 		}
 		else
 		{
-			movCar_x += KeyFrame[playIndex].movCar_xInc;
-			movCar_y += KeyFrame[playIndex].movCar_yInc;
-			movCar_z += KeyFrame[playIndex].movCar_zInc;
-			giroCar_x += KeyFrame[playIndex].giroCar_xInc;
-			giroCar_y += KeyFrame[playIndex].giroCar_yInc;
-			giroCar_z += KeyFrame[playIndex].giroCar_zInc;
+			movAleFrontDer += KeyFrame[playIndex].movAleFrontDerT;
+			movAleFrontIzq += KeyFrame[playIndex].movAleFrontIzqT;
+			movAleTrasDer += KeyFrame[playIndex].movAleTrasDerT;
+			movAleTrasIzq += KeyFrame[playIndex].movAleTrasIzqT;
+			movBody += KeyFrame[playIndex].movBodyT;
+			rotBody += KeyFrame[playIndex].movBodyT;
 			i_curr_steps++;
 		}
 	}
 }
-
-//PARA INPUT CON KEYFRAMES 
-void inputKeyframes(bool* keys)
-{
-	if (keys[GLFW_KEY_SPACE])
-	{
-		if (reproduciranimacion < 1)
-		{
-			if (play == false && (FrameIndex > 1))
-			{
-				resetElements();
-				interpolation();
-				play = true;
-				playIndex = 0;
-				i_curr_steps = 0;
-				reproduciranimacion++;
-				habilitaranimacion = 0;
-				//printf("\n presiona 0 para habilitar reproducir de nuevo la animación'\n");
-			}
-			else
-			{
-				play = false;
-			}
-		}
-	}
-	if (keys[GLFW_KEY_0])
-	{
-		if (habilitaranimacion < 1)
-		{
-			reproduciranimacion = 0;
-		}
-	}
-	if (keys[GLFW_KEY_L])
-	{
-		if (guardoFrame < 1)
-		{
-			saveFrame();
-			//printf(" \npresiona P para habilitar guardar otro frame'\n");
-			guardoFrame++;
-			reinicioFrame = 0;
-		}
-	}
-	if (keys[GLFW_KEY_P])
-	{
-		if (reinicioFrame < 1)
-		{
-			guardoFrame = 0;
-		}
-	}
-	if (keys[GLFW_KEY_R])
-	{
-		if (ciclo2 < 1)
-		{
-			ciclo = 0;
-		}
-	}
-	if (keys[GLFW_KEY_1])
-	{
-		if (ciclo < 1)
-		{
-			movCar_x += 0.1f;
-			ciclo++;
-			ciclo2 = 0;
-			//printf("\n reinicia con R\n");
-		}
-	}
-	if (keys[GLFW_KEY_2])
-	{
-		if (ciclo < 1)
-		{
-			movCar_x -= 0.1f;
-			ciclo++;
-			ciclo2 = 0;
-			//printf("\n reinicia con R\n");
-		}
-	}
-	if (keys[GLFW_KEY_3])
-	{
-		if (ciclo < 1)
-		{
-			movCar_y += 0.1f;
-			ciclo++;
-			ciclo2 = 0;
-			//printf("\n reinicia con R\n");
-		}
-	}
-	if (keys[GLFW_KEY_4])
-	{
-		if (ciclo < 1)
-		{
-			movCar_y -= 0.1f;
-			ciclo++;
-			ciclo2 = 0;
-			//printf("\n reinicia con R\n");
-		}
-	}
-	if (keys[GLFW_KEY_5])
-	{
-		if (ciclo < 1)
-		{
-			movCar_z += 0.1f;
-			ciclo++;
-			ciclo2 = 0;
-			//printf("\n reinicia con 2\n");
-		}
-	}
-	if (keys[GLFW_KEY_6])
-	{
-		if (ciclo < 1)
-		{
-			movCar_z -= 0.1f;
-			ciclo++;
-			ciclo2 = 0;
-			//printf("\n reinicia con R\n");
-		}
-	}
-	if (keys[GLFW_KEY_7])
-	{
-		if (ciclo < 1)
-		{
-			giroCar_x += 1.0f;
-			ciclo++;
-			ciclo2 = 0;
-			//printf("\n reinicia con R\n");
-		}
-	}
-	if (keys[GLFW_KEY_8])
-	{
-		if (ciclo < 1)
-		{
-			giroCar_y += 1.0f;
-			ciclo++;
-			ciclo2 = 0;
-			//printf("\n reinicia con R\n");
-		}
-	}
-	if (keys[GLFW_KEY_9])
-	{
-		if (ciclo < 1)
-		{
-			giroCar_z += 1.0f;
-			ciclo++;
-			ciclo2 = 0;
-			//printf("\n reinicia con R\n");
-		}
-	}
-}
-
 
 int main()
 {
@@ -815,12 +799,12 @@ int main()
 
 
 	//KEYFRAMES DECLARADOS INICIALES
-	KeyFrame[0].movCar_x = -0.4f;
-	KeyFrame[0].movCar_y = -0.3f;
-	KeyFrame[0].movCar_z = 0.7f;
-	KeyFrame[0].giroCar_x = 90;
-	KeyFrame[0].giroCar_y = -47;
-	KeyFrame[0].giroCar_z = 0;
+	KeyFrame[0].movAleFrontDerT = 0.0f;
+	KeyFrame[0].movAleFrontIzqT = 0.0f;
+	KeyFrame[0].movAleTrasDerT = 0.0f;
+	KeyFrame[0].movAleTrasIzqT = 0.0f;
+	KeyFrame[0].movBodyT = 0.0f;
+	KeyFrame[0].rotBodyT = 0;
 
 	////Loop mientras no se cierra la ventana
 	while (!mainWindow.getShouldClose())
@@ -884,19 +868,6 @@ int main()
 		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		meshList[2]->RenderMesh();
 		shaderList[0].SetDirectionalLight(&mainLight);
-
-		//Ejemplo de movimiento con KeyFrame
-		/*model = glm::mat4(1.0);
-		posCar = glm::vec3(posXcar + movCar_x, posYcar + movCar_y, posZcar + movCar_z);
-		model = glm::translate(model, posCar);
-		model = glm::scale(model, glm::vec3(0.001f, 0.001f, 0.001f));
-		model = glm::rotate(model, giroCar_y * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
-		model = glm::rotate(model, giroCar_x * toRadians, glm::vec3(1.0f, 0.0f, 0.0f));
-		model = glm::rotate(model, giroCar_z * toRadians, glm::vec3(0.0f, 0.0f, 1.0f));
-		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
-		Kitt_M.RenderModel();*/
-
 
 		// -------------------------------------------------------------------------------------------------------------------------
 		// Acuario
@@ -1070,34 +1041,40 @@ int main()
 		//Torso
 		model = glm::translate(glm::mat4(1.0f), glm::vec3(-82.0f, 10.0f, -26.0f));
 		model = glm::scale(model, glm::vec3(0.12f));
+		model = glm::translate(model, glm::vec3(movBody, 0.0f, .0f));
+		model = glm::rotate(model, rotBody * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		modelaux = model;
 		TorsoTortuga.RenderModel();
-
-		//AletaIzq
-		model = glm::translate(modelaux, glm::vec3(0.0f, 0.0f, 0.0f));
-		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		AletaIzqTortuga.RenderModel();
-
-		//AletaDer
-		model = glm::translate(modelaux, glm::vec3(0.0f, 0.0f, 0.0f));
-		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		AletaDerTortuga.RenderModel();
-
-		//AletaIzqTra
-		model = glm::translate(modelaux, glm::vec3(0.0f, 0.0f, 0.0f));
-		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		AletaTraIzqTortuga.RenderModel();
-
-		//AletaDerTra
-		model = glm::translate(modelaux, glm::vec3(0.0f, 0.0f, 0.0f));
-		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		AletaTraDerTortuga.RenderModel();
 
 		//cabeza
 		model = glm::translate(modelaux, glm::vec3(0.0f, 0.0f, 0.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		CabezaTortuga.RenderModel();
+
+		//AletaFronIzq
+		model = glm::translate(modelaux, glm::vec3(0.0f, 0.0f, 0.0f));
+		model = glm::rotate(model, movAleFrontIzq * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		AletaIzqTortuga.RenderModel();
+
+		//AletaFronDer
+		model = glm::translate(modelaux, glm::vec3(0.0f, 0.0f, 0.0f));
+		model = glm::rotate(model, movAleFrontDer * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		AletaDerTortuga.RenderModel();
+
+		//AletaIzqTra
+		model = glm::translate(modelaux, glm::vec3(0.0f, 0.0f, 0.0f));
+		model = glm::rotate(model, movAleTrasIzq * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		AletaTraIzqTortuga.RenderModel();
+
+		//AletaDerTra
+		model = glm::translate(modelaux, glm::vec3(0.0f, 0.0f, 0.0f));
+		model = glm::rotate(model, movAleTrasDer * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		AletaTraDerTortuga.RenderModel();
 
 		// -------------------------------------------------------------------------------------------------------------------------
 		// Tiburon

@@ -1,7 +1,5 @@
 #include "Model.h"
 
-
-
 Model::Model()
 {
 }
@@ -55,8 +53,6 @@ void Model::RenderModel()
 		MeshList[i]->RenderMesh();
 
 	}
-
-
 }
 
 
@@ -135,7 +131,6 @@ void Model::LoadMaterials(const aiScene * scene)
 				{
 					if (!TextureList[i]->LoadTextureA())
 					{
-						printf("Falló en cargar la Textura :%s\n", texPath);
 						delete TextureList[i];
 						TextureList[i] = nullptr;
 					}
@@ -144,7 +139,6 @@ void Model::LoadMaterials(const aiScene * scene)
 				{
 					if (!TextureList[i]->LoadTexture())
 					{
-						printf("Falló en cargar la Textura :%s\n", texPath);
 						delete TextureList[i];
 						TextureList[i] = nullptr;
 					}
@@ -156,6 +150,5 @@ void Model::LoadMaterials(const aiScene * scene)
 			TextureList[i] = new Texture("Textures/plain.png"); //textura que se aplicará a los modelos si no tienen textura o la textura no se puede cargar
 			TextureList[i]->LoadTextureA();
 		}
-
 	}
 }
