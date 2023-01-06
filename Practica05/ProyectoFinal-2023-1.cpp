@@ -1033,9 +1033,10 @@ int main()
 		// ------------------------------------------------------------------------------------------------------------------------- 
 
 		//CuerpoPrincipal
-		modelaux = model = glm::mat4(1.0);
-		model = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 15.0f, 0.0f));
-		model = glm::scale(model, glm::vec3(1.0f));
+		model = glm::mat4(1.0);
+		model = glm::translate(glm::mat4(1.0f), glm::vec3(78.0f, 10.0f, -285.0f));
+		model = glm::scale(model, glm::vec3(0.3f));
+		modelaux = model;
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		CuerpoDelOrca.RenderModel();
 
@@ -1067,10 +1068,10 @@ int main()
 		// ------------------------------------------------------------------------------------------------------------------------- 
 
 		//Torso
-		modelaux = model = glm::translate(glm::mat4(1.0f), glm::vec3(20.0f, 15.0f, 0.0f));
+		model = glm::translate(glm::mat4(1.0f), glm::vec3(-82.0f, 10.0f, -26.0f));
+		model = glm::scale(model, glm::vec3(0.12f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
-		glUniform2fv(uniformTextureOffset, 1, glm::value_ptr(toffset));
+		modelaux = model;
 		TorsoTortuga.RenderModel();
 
 		//AletaIzq
@@ -1103,8 +1104,9 @@ int main()
 		// ------------------------------------------------------------------------------------------------------------------------- 
 
 		//CuerpoPrincipal
-		modelaux = model = glm::translate(glm::mat4(1.0f), glm::vec3(-20.0f, 15.0f, 0.0f));
-		model = glm::scale(model, glm::vec3(5.0f));
+		model = glm::translate(glm::mat4(1.0f), glm::vec3(78.0f , 8.0f, -175.0f));
+		model = glm::scale(model, glm::vec3(0.55f));
+		modelaux = model;
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		CuerpoPrinTiburon.RenderModel();
 
@@ -1140,7 +1142,9 @@ int main()
 		// ------------------------------------------------------------------------------------------------------------------------- 
 
 		//CuerpoPrincipal
-		modelaux = model = glm::translate(glm::mat4(1.0f), glm::vec3(40.0f, 15.0f, 0.0f));
+		model = glm::translate(glm::mat4(1.0f), glm::vec3(42.0f, 1.0f, -75.0f));
+		model = glm::scale(model, glm::vec3(0.3f));
+		modelaux = model;
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(modelaux));
 		TorsoPinguino.RenderModel();
 
@@ -1175,13 +1179,14 @@ int main()
 		// ------------------------------------------------------------------------------------------------------------------------- 
 
 		//CuerpoPrincipal
-		modelaux = model = glm::translate(glm::mat4(1.0f), glm::vec3(60.0f, 15.0f, 0.0f));
-		model = glm::scale(model, glm::vec3(1.25f));
+		model = glm::translate(glm::mat4(1.0f), glm::vec3(-43.0f, 6.0f, -295.0f));
+		model = glm::scale(model, glm::vec3(0.25f));
+		modelaux = model;
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(modelaux));
 		CuerpoManta.RenderModel();
 
 		////AletaSupIzq
-		model = glm::translate(modelaux, glm::vec3(10.0f, 10.0f, 10.0f));
+		model = glm::translate(modelaux, glm::vec3(0.0f, 0.0f, 0.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		AletaSupIzqManta.RenderModel();
 
@@ -1210,8 +1215,9 @@ int main()
 		// ------------------------------------------------------------------------------------------------------------------------- 
 
 		//CuerpoPrincipal
-		model = glm::translate(glm::mat4(1.0f), glm::vec3(90.0f, 15.0f, 0.0f));
-		modelaux = model = glm::scale(model, glm::vec3(1.0f));
+		model = glm::translate(glm::mat4(1.0f), glm::vec3(30.0f, 12.0f, 60.0f));
+		model = glm::scale(model, glm::vec3(0.15f));
+		modelaux = model;
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		CuerpoPezCafe.RenderModel();
 
@@ -1247,8 +1253,9 @@ int main()
 		// ------------------------------------------------------------------------------------------------------------------------- 
 
 		//CuerpoPrincipal
-		modelaux = model = glm::translate(glm::mat4(1.0f), glm::vec3(-40.0f, 15.0f, 0.0f));
-		model = glm::scale(model, glm::vec3(1.0f));
+		modelaux = model = glm::translate(glm::mat4(1.0f), glm::vec3(48.0f, 12.0f, 60.0f));
+		model = glm::scale(model, glm::vec3(0.25f));
+		modelaux = model;
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		CuerpoPezAzul.RenderModel();
 
@@ -1273,8 +1280,9 @@ int main()
 		// ------------------------------------------------------------------------------------------------------------------------- 
 
 		//CuerpoPrincipal
-		model = modelaux = glm::translate(glm::mat4(1.0f), glm::vec3(-60.0f, 15.0f, 0.0f));
-		model = glm::scale(model, glm::vec3(1.0f));
+		model = modelaux = glm::translate(glm::mat4(1.0f), glm::vec3(-45.0f, 5.0f, -180.0f));
+		model = glm::scale(model, glm::vec3(0.3f));
+		modelaux = model;
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		CuerpoDelDelfin.RenderModel();
 
