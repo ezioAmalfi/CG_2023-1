@@ -206,14 +206,14 @@ void calcAverageNormals(unsigned int* indices, unsigned int indiceCount, GLfloat
 void CreateObjects()
 {
 	unsigned int anuncioIndices[] = {
-		0, 2, 1, 1, 2, 3
+		0, 1, 2, 0, 2, 3
 	};
 
 	GLfloat anuncioVertices[] = {
-		1.0f, 1.0f, 0.0f,		0.0f, 0.0f,		0.0f, 0.0f, -1.0f,
-		1.0f, -1.0f, 0.0f,		1.0f, 0.0f,		0.0f, 0.0f, -1.0f,
-		-1.0f, 1.0f, 0.0f,		1.0f, 1.0f,		0.0f, 0.0f, -1.0f,
-		-1.0f, -1.0f, 0.0f,		0.0f, 1.0f,		0.0f, 0.0f, -1.0f,
+		0.0f, 0.0f, 0.0f,	0.0f, 0.0f,		-1.0f, 0.0f, 0.0f,
+		1.0f, 0.0f, 0.0f,	1.0f, 0.0f,		-1.0f, 0.0f, 0.0f,
+		1.0f, 1.0f, 0.0f,	1.0f, 1.0f,		-1.0f, 0.0f, 0.0f,
+		0.0f, 1.0f, 0.0f,	0.0f, 1.0f,		-1.0f, 0.0f, 0.0f
 	};
 
 	unsigned int floorIndices[] = {
@@ -228,21 +228,22 @@ void CreateObjects()
 	};
 
 	unsigned int aguaIndices[] = {
-	   0, 1, 2,
-	   0, 2, 3,
+	   0, 1, 2, 0, 2, 3
 	};
 
 	GLfloat aguaVertices[] = {
-		0.0f, 0.0f, 0.0f,		0.0f, 0.0f,		0.0f, 0.0f, -1.0f,
-		0.0f, 1.0f, 0.0f,		1.0f, 0.0f,		0.0f, 0.0f, -1.0f,
-		0.0f, 1.0f, 1.0f,		1.0f, 1.0f,		0.0f, 0.0f, -1.0f,
-		0.0f, 0.0f, 1.0f,		0.0f, 1.0f,		0.0f, 0.0f, -1.0f,
+		0.0f, 0.0f, 0.0f,	0.0f, 0.0f,		0.0f, 0.0f, -1.0f,
+		0.0f, 1.0f, 0.0f,	1.0f, 0.0f,		0.0f, 0.0f, -1.0f,
+		0.0f, 1.0f, 1.0f,	1.0f, 1.0f,		0.0f, 0.0f, -1.0f,
+		0.0f, 0.0f, 1.0f,	0.0f, 1.0f,		0.0f, 0.0f, -1.0f
 	};
 
+	//textura anuncio
 	Mesh* obj1 = new Mesh();
 	obj1->CreateMesh(anuncioVertices, anuncioIndices, 32, 6);
 	meshList.push_back(obj1);
 
+	//textura agua
 	Mesh* obj2 = new Mesh();
 	obj2->CreateMesh(aguaVertices, aguaIndices, 32, 6);
 	meshList.push_back(obj2);
@@ -1273,7 +1274,7 @@ int main()
 		//Textura de agua
 		toffsetu += 0.001;		
 		if (toffsetu > 1.0) toffsetu = 0.0;	
-		toffset = glm::vec2(toffsetu,0.0f);
+		toffset = glm::vec2(0.0f, toffsetu);
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(-72.0f, 1.0f, -102.0f));
 		model = glm::scale(model, glm::vec3(0.0f, 30.0f, 118.0f));
@@ -1283,13 +1284,11 @@ int main()
 		meshList[1]->RenderMesh();
 
 		//Textura de anuncio
-		toffsetv += 0.00001;
-		if (toffsetv > 1.0) toffsetv = 0.0;
-		toffset = glm::vec2(0.0f, toffsetv);
+		toffsetv += 0.001;
+		toffset = glm::vec2(toffsetv, 0.0f);
 		model = glm::mat4(1.0);
-		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(movBody,rotBody, 0.0f));
-		model = glm::scale(model, glm::vec3(0.0f, 50.0f, 50.0f));
+		model = glm::translate(model, glm::vec3(-43.5f,17.2f, 88.0f));
+		model = glm::scale(model, glm::vec3(30.0f, 20.0f, 0.0f));
 		glUniform2fv(uniformTextureOffset, 1, glm::value_ptr(toffset));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		anuncioTexture.UseTexture();
