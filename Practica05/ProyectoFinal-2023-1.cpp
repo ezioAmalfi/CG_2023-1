@@ -392,7 +392,7 @@ void inputKeyframes(bool* keys)
 	{
 		if (ciclo < 1)
 		{
-			movAleFrontDer += 0.1f;
+			movAleFrontDer += 1.0f;
 			ciclo++;
 			ciclo2 = 0;
 			//printf("\n reinicia con R\n");
@@ -402,7 +402,7 @@ void inputKeyframes(bool* keys)
 	{
 		if (ciclo < 1)
 		{
-			movAleFrontIzq += 0.1f;
+			movAleFrontIzq += 1.0f;
 			ciclo++;
 			ciclo2 = 0;
 			//printf("\n reinicia con R\n");
@@ -412,7 +412,7 @@ void inputKeyframes(bool* keys)
 	{
 		if (ciclo < 1)
 		{
-			movAleTrasDer += 0.1f;
+			movAleTrasDer += 1.0f;
 			ciclo++;
 			ciclo2 = 0;
 			//printf("\n reinicia con R\n");
@@ -422,7 +422,7 @@ void inputKeyframes(bool* keys)
 	{
 		if (ciclo < 1)
 		{
-			movAleTrasIzq += 0.1f;
+			movAleTrasIzq += 1.0f;
 			ciclo++;
 			ciclo2 = 0;
 			//printf("\n reinicia con R\n");
@@ -432,7 +432,7 @@ void inputKeyframes(bool* keys)
 	{
 		if (ciclo < 1)
 		{
-			movBody += 0.1f;
+			movBody += 1.0f;
 			ciclo++;
 			ciclo2 = 0;
 			//printf("\n reinicia con 2\n");
@@ -442,7 +442,7 @@ void inputKeyframes(bool* keys)
 	{
 		if (ciclo < 1)
 		{
-			movBody -= 0.1f;
+			movBody -= 1.0f;
 			ciclo++;
 			ciclo2 = 0;
 			//printf("\n reinicia con R\n");
@@ -869,9 +869,9 @@ int main()
 		meshList[2]->RenderMesh();
 		shaderList[0].SetDirectionalLight(&mainLight);
 
-		// -------------------------------------------------------------------------------------------------------------------------
-		// Acuario
-		// ------------------------------------------------------------------------------------------------------------------------- 
+		 -------------------------------------------------------------------------------------------------------------------------
+		 Acuario
+		 ------------------------------------------------------------------------------------------------------------------------- 
 		model = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.1f, 0.0f));
 		model = glm::scale(model, glm::vec3(1.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
@@ -1040,39 +1040,38 @@ int main()
 
 		//Torso
 		model = glm::translate(glm::mat4(1.0f), glm::vec3(-82.0f, 10.0f, -26.0f));
-		model = glm::scale(model, glm::vec3(0.12f));
-		model = glm::translate(model, glm::vec3(movBody, 0.0f, .0f));
+		//model = glm::scale(model, glm::vec3(0.12f));
 		model = glm::rotate(model, rotBody * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		model = glm::translate(model, glm::vec3(movBody, 0.0f, .0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		modelaux = model;
 		TorsoTortuga.RenderModel();
 
 		//cabeza
-		model = glm::translate(modelaux, glm::vec3(0.0f, 0.0f, 0.0f));
-		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(modelaux));
 		CabezaTortuga.RenderModel();
 
 		//AletaFronIzq
-		model = glm::translate(modelaux, glm::vec3(0.0f, 0.0f, 0.0f));
-		model = glm::rotate(model, movAleFrontIzq * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		model = glm::translate(modelaux, glm::vec3(0.0f, 0.0f, .0f));
+		model = glm::rotate(model, movAleFrontIzq * toRadians, glm::vec3(1.0f, 0.0f, 0.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		AletaIzqTortuga.RenderModel();
 
 		//AletaFronDer
-		model = glm::translate(modelaux, glm::vec3(0.0f, 0.0f, 0.0f));
+		model = glm::translate(modelaux, glm::vec3(0.0f, 0.0f, .0f));
 		model = glm::rotate(model, movAleFrontDer * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		AletaDerTortuga.RenderModel();
 
 		//AletaIzqTra
-		model = glm::translate(modelaux, glm::vec3(0.0f, 0.0f, 0.0f));
-		model = glm::rotate(model, movAleTrasIzq * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		model = glm::translate(modelaux, glm::vec3(0.0f, 0.0f, .0f));
+		model = glm::rotate(model, movAleTrasIzq * toRadians, glm::vec3(0.0f, 0.0f, 1.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		AletaTraIzqTortuga.RenderModel();
 
 		//AletaDerTra
-		model = glm::translate(modelaux, glm::vec3(0.0f, 0.0f, 0.0f));
-		model = glm::rotate(model, movAleTrasDer * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		model = glm::translate(modelaux, glm::vec3(0.0f, 0.0f, .0f));
+		model = glm::rotate(model, movAleTrasDer * toRadians, glm::vec3(0.0f, 0.0f, 1.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		AletaTraDerTortuga.RenderModel();
 
@@ -1283,9 +1282,9 @@ int main()
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		CuerpoTraDelfin.RenderModel();
 
-		//Acá todo lo de GL_BLEND (Texturas)
-		//glEnable(GL_BLEND);
-		//glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+		Acá todo lo de GL_BLEND (Texturas)
+		glEnable(GL_BLEND);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 		////Textura de anuncio en pantalla
 		//toffsetu += 0.0001;
@@ -1304,7 +1303,7 @@ int main()
 		//HELPER PARA COLOCAR OBJETOS
 		if (delay_helper >= 50.0f) {
 
-			printf("\nEl objeto está en X: %f , Y: %f , Z: %f", mainWindow.getposx_bh(), mainWindow.getelevacion_bh(), mainWindow.getposz_bh());
+			//printf("\nEl objeto está en X: %f , Y: %f , Z: %f", mainWindow.getposx_bh(), mainWindow.getelevacion_bh(), mainWindow.getposz_bh());
 			delay_helper = 0.0f;
 		}
 		delay_helper += deltaTime;
