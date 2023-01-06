@@ -1282,7 +1282,7 @@ int main()
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		CuerpoTraDelfin.RenderModel();
 
-		Acá todo lo de GL_BLEND (Texturas)
+		//Acá todo lo de GL_BLEND (Texturas)
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
