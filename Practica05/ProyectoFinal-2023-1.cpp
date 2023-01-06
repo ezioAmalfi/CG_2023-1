@@ -146,6 +146,7 @@ Model marco2;
 Model marco3;
 
 Model reja;
+Model camino;
 
 //Skybox
 Skybox skybox;
@@ -668,6 +669,10 @@ int main()
 	reja = Model();
 	reja.LoadModel("Models/reja/reja.obj");
 
+	// reja //
+	camino = Model();
+	camino.LoadModel("Models/camino/camino.obj");
+
 	//ORCA//
 	AletaDerOrca = Model();
 	AletaDerOrca.LoadModel("Models/orca/AletaDerOrca.obj");
@@ -934,10 +939,40 @@ int main()
 		AcuarioPez.RenderModel();
 
 		// -------------------------------------------------------------------------------------------------------------------------
-		// AcuarioExt
+		// AcuarioOrca
 		// ------------------------------------------------------------------------------------------------------------------------- 
-		model = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.2f, 0.0f));
-		model = glm::scale(model, glm::vec3(1.0f));
+		model = glm::translate(glm::mat4(1.0f), glm::vec3(75.0f, 0.4f, -290.0f));
+		model = glm::scale(model, glm::vec3(4.5f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+		glUniform2fv(uniformTextureOffset, 1, glm::value_ptr(toffset));
+		AcuarioExt.RenderModel();
+
+		// -------------------------------------------------------------------------------------------------------------------------
+		// AcuarioManta
+		// ------------------------------------------------------------------------------------------------------------------------- 
+		model = glm::translate(glm::mat4(1.0f), glm::vec3(-45.0f, 0.4f, -290.0f));
+		model = glm::scale(model, glm::vec3(4.5f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+		glUniform2fv(uniformTextureOffset, 1, glm::value_ptr(toffset));
+		AcuarioExt.RenderModel();
+
+		// -------------------------------------------------------------------------------------------------------------------------
+		// AcuarioTiburon
+		// ------------------------------------------------------------------------------------------------------------------------- 
+		model = glm::translate(glm::mat4(1.0f), glm::vec3(75.0f, 0.6f, -175.0f));
+		model = glm::scale(model, glm::vec3(3.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+		glUniform2fv(uniformTextureOffset, 1, glm::value_ptr(toffset));
+		AcuarioExt.RenderModel();
+
+		// -------------------------------------------------------------------------------------------------------------------------
+		// AcuarioDelfin
+		// ------------------------------------------------------------------------------------------------------------------------- 
+		model = glm::translate(glm::mat4(1.0f), glm::vec3(-45.0f, 0.6f, -175.0f));
+		model = glm::scale(model, glm::vec3(3.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
 		glUniform2fv(uniformTextureOffset, 1, glm::value_ptr(toffset));
@@ -982,6 +1017,17 @@ int main()
 		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
 		glUniform2fv(uniformTextureOffset, 1, glm::value_ptr(toffset));
 		reja.RenderModel();
+
+		// -------------------------------------------------------------------------------------------------------------------------
+		// camino
+		// ------------------------------------------------------------------------------------------------------------------------- 
+		model = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.2f, 0.0f));
+		model = glm::scale(model, glm::vec3(1.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+		glUniform2fv(uniformTextureOffset, 1, glm::value_ptr(toffset));
+		camino.RenderModel();
+
 		// -------------------------------------------------------------------------------------------------------------------------
 		// Orca
 		// ------------------------------------------------------------------------------------------------------------------------- 
