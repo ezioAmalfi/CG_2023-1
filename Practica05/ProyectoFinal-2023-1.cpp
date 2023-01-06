@@ -205,24 +205,19 @@ void calcAverageNormals(unsigned int* indices, unsigned int indiceCount, GLfloat
 
 void CreateObjects()
 {
-	unsigned int indices[] = {
-		0, 3, 1,
-		1, 3, 2,
-		2, 3, 0,
-		0, 1, 2
+	unsigned int anuncioIndices[] = {
+		0, 2, 1, 1, 2, 3
 	};
 
-	GLfloat vertices[] = {
-		//	x      y      z			u	  v			nx	  ny    nz
-			-1.0f, -1.0f, -0.6f,	0.0f, 0.0f,		0.0f, 0.0f, 0.0f,
-			0.0f, -1.0f, 1.0f,		0.5f, 0.0f,		0.0f, 0.0f, 0.0f,
-			1.0f, -1.0f, -0.6f,		1.0f, 0.0f,		0.0f, 0.0f, 0.0f,
-			0.0f, 1.0f, 0.0f,		0.5f, 1.0f,		0.0f, 0.0f, 0.0f
+	GLfloat anuncioVertices[] = {
+		1.0f, 1.0f, 0.0f,		0.0f, 0.0f,		0.0f, 0.0f, -1.0f,
+		1.0f, -1.0f, 0.0f,		1.0f, 0.0f,		0.0f, 0.0f, -1.0f,
+		-1.0f, 1.0f, 0.0f,		1.0f, 1.0f,		0.0f, 0.0f, -1.0f,
+		-1.0f, -1.0f, 0.0f,		0.0f, 1.0f,		0.0f, 0.0f, -1.0f,
 	};
 
 	unsigned int floorIndices[] = {
-		0, 2, 1,
-		1, 2, 3
+		0, 2, 1, 1, 2, 3
 	};
 
 	GLfloat floorVertices[] = {
@@ -245,7 +240,7 @@ void CreateObjects()
 	};
 
 	Mesh* obj1 = new Mesh();
-	obj1->CreateMesh(vertices, indices, 32, 12);
+	obj1->CreateMesh(anuncioVertices, anuncioIndices, 32, 6);
 	meshList.push_back(obj1);
 
 	Mesh* obj2 = new Mesh();
@@ -513,8 +508,12 @@ int main()
 	//Carga de texturas
 	pisoTexture = Texture("Textures/piso.tga");
 	pisoTexture.LoadTextureA();
+
 	aguaTexture = Texture("Textures/aguaTex.tga");
 	aguaTexture.LoadTextureA();
+
+	anuncioTexture = Texture("Textures/acuarioTex.tga");
+	anuncioTexture.LoadTextureA();
 
 	std::vector<std::string> skyboxFaces;
 	std::vector<std::string> nowSkybox;
@@ -1276,7 +1275,7 @@ int main()
 		if (toffsetu > 1.0) toffsetu = 0.0;	
 		toffset = glm::vec2(toffsetu,0.0f);
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(-72.0f, 1.0, -102.0));
+		model = glm::translate(model, glm::vec3(-72.0f, 1.0f, -102.0f));
 		model = glm::scale(model, glm::vec3(0.0f, 30.0f, 118.0f));
 		glUniform2fv(uniformTextureOffset, 1, glm::value_ptr(toffset));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
@@ -1289,12 +1288,12 @@ int main()
 		toffset = glm::vec2(0.0f, toffsetv);
 		model = glm::mat4(1.0);
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(-72.0f, 1.0, -102.0));
-		model = glm::scale(model, glm::vec3(0.0f, 30.0f, 118.0f));
+		model = glm::translate(model, glm::vec3(movBody,rotBody, 0.0f));
+		model = glm::scale(model, glm::vec3(0.0f, 50.0f, 50.0f));
 		glUniform2fv(uniformTextureOffset, 1, glm::value_ptr(toffset));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		aguaTexture.UseTexture();
-		meshList[1]->RenderMesh();
+		anuncioTexture.UseTexture();
+		meshList[0]->RenderMesh();
 		glDisable(GL_BLEND);
 
 
