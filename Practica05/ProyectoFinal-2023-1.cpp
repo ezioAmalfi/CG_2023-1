@@ -42,6 +42,27 @@ const float toRadians = 3.14159265f / 180.0f;
 
 //variables para animación
 
+//Tiburon//
+bool
+animacionTiburon = false,
+movTiburon = false,
+mordidaTiburon = false,
+desaparecePez = false,
+movColTibu = false,
+movColITibu = false,
+reset = false,
+movColDTibu = false;
+
+float
+movXTibu = 0.0f,
+movYTibu = 0.0f,
+movZTibu = 0.0f,
+movColaTibu = 0.0f,
+movAletasTibu = 0.0f,
+movCBocaTibu = 0.0f,
+varPezDes = 1.0f,
+movBocaTibu = 0.0f;
+
 static float delay_daynight = 0.0f;
 static float delay_helper = 0.0f;
 static float light_changing = 1.0f;
@@ -331,6 +352,37 @@ void inputKeyframes(bool* keys)
 {
 	if (keys[GLFW_KEY_SPACE])
 	{
+		animacionTiburon = true;
+		if (animacionTiburon) {
+
+			movTiburon = true;
+
+			if (movTiburon) {
+				if (movZTibu <= 15.0f) {
+					movZTibu += 0.003;
+				}
+				else {
+					movTiburon = false;
+					mordidaTiburon = true;
+				}
+			}
+			if (mordidaTiburon) {
+				if (movBocaTibu >= -5.0f) {
+					movBocaTibu -= 0.2f;
+				}
+				else {
+					desaparecePez = true;
+					mordidaTiburon = false;
+				}
+			}
+
+			if (desaparecePez) {
+				varPezDes = 0.0f;
+				reset = true;
+
+			}
+
+		}
 		if (reproduciranimacion < 1)
 		{
 			if (play == false && (FrameIndex > 1))
@@ -1057,7 +1109,7 @@ int main()
 		// ------------------------------------------------------------------------------------------------------------------------- 
 
 		//CuerpoPrincipal
-		model = glm::translate(glm::mat4(1.0f), glm::vec3(78.0f , 8.0f, -175.0f));
+		model = glm::translate(glm::mat4(1.0f), glm::vec3(78.0f + movXTibu , 8.0f + movYTibu, -175.0f + movZTibu));
 		model = glm::scale(model, glm::vec3(0.55f));
 		modelaux = model;
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
@@ -1081,11 +1133,13 @@ int main()
 
 		//Cola
 		model = glm::translate(modelaux, glm::vec3(0.0f, 0.0f, 0.0f));
+		model = glm::rotate(model, movColaTibu * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		ColaTiburon.RenderModel();
 
 		//Boca
 		model = glm::translate(modelaux, glm::vec3(0.0f, 0.0f, 0.0f));
+		model = glm::rotate(model, (5 + movBocaTibu) * toRadians, glm::vec3(1.0f, 0.0f, 0.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		BocaTiburon.RenderModel();
 
@@ -1259,6 +1313,31 @@ int main()
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		CuerpoTraDelfin.RenderModel();
 
+		// -------------------------------------------------------------------------------------------------------------------------
+		// Pez Azul tibu
+		// ------------------------------------------------------------------------------------------------------------------------- 
+
+		//CuerpoPrincipal
+		modelaux = model = glm::translate(glm::mat4(1.0f), glm::vec3(78.0f, 8.3f, -156.0f ));
+		model = glm::scale(model, glm::vec3(0.25f * varPezDes));
+		modelaux = model;
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		CuerpoPezAzul.RenderModel();
+
+		//AletaDer
+		model = glm::translate(modelaux, glm::vec3(0.0f, 0.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		AletaDerPezAzul.RenderModel();
+
+		//AletaIzq
+		model = glm::translate(modelaux, glm::vec3(0.0f, 0.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		AletaIzqPezAzul.RenderModel();
+
+		//Cola
+		model = glm::translate(modelaux, glm::vec3(0.0f, 0.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		ColaPezAzul.RenderModel();
 
 		//HELPER PARA COLOCAR OBJETOS
 		if (delay_helper >= 50.0f) {
@@ -1268,7 +1347,40 @@ int main()
 		}
 		delay_helper += deltaTime;
 
-		// SECCION PARA ANIMACIÓN
+		// SECCION PARA ANIMACIÓN //
+
+			if (animacionTiburon) {
+
+				movTiburon = true;
+				
+				if (movTiburon) {
+					if (movZTibu <= 15.0f) {
+						movZTibu += 0.003;
+					}
+					else {
+						movTiburon = false;
+						mordidaTiburon = true;
+					}
+				}
+				if (mordidaTiburon) {
+					if (movBocaTibu >= -5.0f) {
+						movBocaTibu -= 0.2f;
+					}
+					else {
+						desaparecePez = true;
+						mordidaTiburon = false;
+					}
+				}
+
+				if (desaparecePez) {
+					varPezDes = 0.0f;
+					reset = true;
+		
+				}
+
+			}
+	
+		
 		//GL_BLEND (Texturas Animadas)
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
