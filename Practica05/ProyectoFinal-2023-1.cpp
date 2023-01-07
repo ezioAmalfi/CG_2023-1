@@ -1016,7 +1016,7 @@ int main()
 
 		//Torso
 		modelaux2 = modelaux = model = glm::translate(glm::mat4(1.0f), glm::vec3(-82.0f, 10.0f, -26.0f));
-		//model = glm::scale(model, glm::vec3(0.12f));
+		model = glm::scale(model, glm::vec3(0.12f));
 		model = glm::rotate(model, rotBody * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		model = glm::translate(model, glm::vec3(movBody, 0.0f, .0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));		
