@@ -828,6 +828,7 @@ int main()
 
 		glm::mat4 model(1.0); //modelos
 		glm::mat4 modelaux(1.0); //pivotes
+		glm::mat4 modelaux2(1.0);
 
 		glm::vec3 color = glm::vec3(1.0f, 1.0f, 1.0f);
 		glm::vec2 toffset = glm::vec2(0.0f, 0.0f);
@@ -1014,21 +1015,22 @@ int main()
 		// ------------------------------------------------------------------------------------------------------------------------- 
 
 		//Torso
-		model = glm::translate(glm::mat4(1.0f), glm::vec3(-82.0f, 10.0f, -26.0f));
-		model = glm::scale(model, glm::vec3(0.12f));
+		modelaux2 = modelaux = model = glm::translate(glm::mat4(1.0f), glm::vec3(-82.0f, 10.0f, -26.0f));
+		//model = glm::scale(model, glm::vec3(0.12f));
 		model = glm::rotate(model, rotBody * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		model = glm::translate(model, glm::vec3(movBody, 0.0f, .0f));
-		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		modelaux = model;
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));		
 		TorsoTortuga.RenderModel();
 
 		//cabeza
-		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(modelaux));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		CabezaTortuga.RenderModel();
 
 		//AletaFronIzq
-		model = glm::translate(modelaux, glm::vec3(0.0f, 0.0f, .0f));
+		model = glm::translate(modelaux, glm::vec3(-1.0f, -5.0f, -2.0f));	
 		model = glm::rotate(model, movAleFrontIzq * toRadians, glm::vec3(1.0f, 0.0f, 0.0f));
+		modelaux2 = model = glm::translate(model, glm::vec3(-1.0f, 0.0f, 0.0f));
+		//model = glm::scale(model, glm::vec3(0.12f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		AletaIzqTortuga.RenderModel();
 
